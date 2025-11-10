@@ -5,7 +5,7 @@
 ---
 ## Lab 4 - A Reduced RISC-V CPU
 
-**_Peter Cheung, V1.2 - 25 Oct 2024_**
+**_Peter Cheung, V1.3 - 13 Nov 2025_**
 
 ---
 
