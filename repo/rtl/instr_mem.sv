@@ -1,10 +1,9 @@
 module instr_mem # (
-    parameter ADDRESS_WIDTH = 32,
+    parameter ADDRESS_WIDTH = 8,
               DATA_WIDTH = 32
 )
 (
-    input logic clk,
-    input logic [ADDRESS_WIDTH-1:0] addr,
+    input logic [31:0] addr,
     output logic [DATA_WIDTH-1:0] dout
 );
 
@@ -15,7 +14,7 @@ initial begin
     $readmemh("instruction.hex", rom_array);
 end
 
-assign dout = rom_array[addr >> 2];  // Shift right by 2 to convert byte address to word address
+assign dout = rom_array[addr[ADDRESS_WIDTH+1:2]];  // bits 9:2 of addr give an 8 bit word index
 
 
 endmodule

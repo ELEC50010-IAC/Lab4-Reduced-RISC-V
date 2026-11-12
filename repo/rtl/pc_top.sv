@@ -5,10 +5,15 @@ module pc_top #(
     input logic rst,
     input logic PCsrc,
     input logic [WIDTH-1:0] ImmOp,    // branch PC offset value
-    output logic [WIDTH-1:0] PC,
+    output logic [WIDTH-1:0] PC
 );
 
 logic [WIDTH-1:0] next_PC;
+logic [WIDTH-1:0] inc_PC;
+logic [WIDTH-1:0] branch_PC;
+
+assign inc_PC = PC + 4;
+assign branch_PC = PC + ImmOp;
 
 always_ff @(posedge clk, posedge rst) begin
     if(rst) begin
@@ -22,9 +27,9 @@ end
 
 mux #(
     .DATA_WIDTH(WIDTH)
-)(
-    .in0(PC + 4),
-    .in1(PC + ImmOp),
+) PC_mux (
+    .in0(inc_PC),
+    .in1(branch_PC),
     .sel(PCsrc),
     .out(next_PC)
 );
