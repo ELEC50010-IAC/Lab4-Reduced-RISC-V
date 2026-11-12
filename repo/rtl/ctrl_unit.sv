@@ -22,16 +22,20 @@ module ctrl_unit (
 
         case (op)
             OP_IMM: begin
-                reg_write = 1'b1;
-                alu_src   = 1'b1;
-                imm_src   = 1'b0;
-                alu_ctrl  = 3'b000;     
+                if (funct3 == 3'b000) begin
+                    reg_write = 1'b1;
+                    alu_src   = 1'b1;
+                    imm_src   = 1'b0;
+                    alu_ctrl  = 3'b000;     
+                end
             end
             BRANCH: begin
-                alu_src   = 1'b0;
-                imm_src   = 1'b1;
-                alu_ctrl  = 3'b001;     
-                pc_src    = (funct3 == 3'b001) & ~zero;   
+                if (funct3 == 3'b001) begin
+                    alu_src   = 1'b0;
+                    imm_src   = 1'b1;
+                    alu_ctrl  = 3'b001;     
+                    pc_src    = (funct3 == 3'b001) & ~zero;   
+                end
             end
             default: ;
         endcase
