@@ -1,4 +1,4 @@
-module alu_top (
+module harshitTop (
     input  logic        clk,
     input  logic [4:0]  rs1,
     input  logic [4:0]  rs2,
