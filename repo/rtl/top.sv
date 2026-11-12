@@ -6,7 +6,7 @@ module top #(
     output  logic [DATA_WIDTH-1:0] a0    
 );
     assign a0 = 32'd5;
-    logic [XLEN-1:0] pc_plus4, pc_target;
+    logic [DATA_WIDTH-1:0] pc_plus4, pc_target;
 
     pc_reg pc_register (
         .clk(clk), .rst(rst), .pc_next(pc_next), .pc(pc)
