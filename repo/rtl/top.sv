@@ -6,39 +6,35 @@ module top #(
     output logic [DATA_WIDTH-1:0] a0
 );
 
-    // ---------------- wires between the blocks ----------------
-    logic [DATA_WIDTH-1:0] pc, pc_next;       // program counter
-    logic [DATA_WIDTH-1:0] instr;             // current instruction
-    logic [DATA_WIDTH-1:0] imm_ext;           // sign-extended immediate
+    logic [DATA_WIDTH-1:0] pc, pc_next;
+    logic [DATA_WIDTH-1:0] instr;
+    logic [DATA_WIDTH-1:0] imm_ext;
     logic                  pc_src, reg_write, alu_src, imm_src;
     logic [2:0]            alu_ctrl;
-    logic                  eq;                // rs1 == rs2 (used by bne)
+    logic                  eq;
 
     /* verilator lint_off UNUSEDSIGNAL */
-    logic [DATA_WIDTH-1:0] pc_plus4, pc_target;   // not needed in Lab 4; used later (jal, auipc)
+    logic [DATA_WIDTH-1:0] pc_plus4, pc_target;
     /* verilator lint_on UNUSEDSIGNAL */
 
-    // ---------------- PC (pc_reg + next_pc) ----------------
     pc_reg #(.XLEN(DATA_WIDTH)) pc_register (
         .clk(clk), .rst(rst), .pc_next(pc_next), .pc(pc)
     );
 
     next_pc #(.XLEN(DATA_WIDTH)) next_pc_logic (
-        .pc_src   ({1'b0, pc_src}),   // Lab 4: only PC+4 (00) or branch (01)
+        .pc_src   ({1'b0, pc_src}),
         .pc       (pc),
         .imm_ext  (imm_ext),
-        .alu_res  ('0),               // jalr not used in Lab 4
+        .alu_res  ('0),
         .pc_plus4 (pc_plus4),
         .pc_target(pc_target),
         .pc_next  (pc_next)
     );
 
-    // ---------------- fetch ----------------
     instr_mem imem (
         .addr(pc), .dout(instr)
     );
 
-    // ---------------- decode ----------------
     ctrl_unit control (
         .op       (instr[6:0]),
         .funct3   (instr[14:12]),
@@ -54,7 +50,6 @@ module top #(
         .din(instr), .immsrc(imm_src), .immOp(imm_ext)
     );
 
-    // ---------------- execute + register file ----------------
     harshitTop datapath (
         .clk     (clk),
         .rs1     (instr[19:15]),
