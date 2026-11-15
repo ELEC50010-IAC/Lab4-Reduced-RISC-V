@@ -1,20 +1,19 @@
 module instr_mem # (
-    parameter ADDRESS_WIDTH = 8,
-              DATA_WIDTH = 32
+    parameter ADDRESS_WIDTH = 10,   // memory holds 2**ADDRESS_WIDTH bytes
 )
 (
     input logic [31:0] addr,
-    output logic [DATA_WIDTH-1:0] dout
+    output logic [31:0] dout
 );
 
-logic [DATA_WIDTH-1:0] rom_array [2**ADDRESS_WIDTH-1:0];
+logic [7:0] rom_array [2**ADDRESS_WIDTH-1:0];
 
 initial begin
     $display("Loading instruction memory.");
-    $readmemh("instruction.hex", rom_array);
+    $readmemh("../rtl/program.hex", rom_array);
 end
 
-assign dout = rom_array[addr[ADDRESS_WIDTH+1:2]];  // bits 9:2 of addr give an 8 bit word index
+assign dout = {rom_array[addr+3], rom_array[addr+2], rom_array[addr+1], rom_array[addr]};
 
 
 endmodule
