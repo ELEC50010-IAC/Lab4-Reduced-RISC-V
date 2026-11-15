@@ -1,8 +1,10 @@
 module instr_mem # (
-    parameter ADDRESS_WIDTH = 10,   // memory holds 2**ADDRESS_WIDTH bytes
+    parameter ADDRESS_WIDTH = 10   // memory holds 2**ADDRESS_WIDTH bytes
 )
 (
+    /* verilator lint_off UNUSED */
     input logic [31:0] addr,
+    /* verilator lint_on UNUSED */
     output logic [31:0] dout
 );
 
@@ -13,7 +15,10 @@ initial begin
     $readmemh("../rtl/program.hex", rom_array);
 end
 
-assign dout = {rom_array[addr+3], rom_array[addr+2], rom_array[addr+1], rom_array[addr]};
+
+logic [ADDRESS_WIDTH-1:0] a;
+assign a = addr[ADDRESS_WIDTH-1:0];
+assign dout = {rom_array[a+3], rom_array[a+2], rom_array[a+1], rom_array[a]};
 
 
 endmodule
