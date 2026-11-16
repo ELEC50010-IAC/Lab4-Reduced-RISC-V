@@ -3,7 +3,7 @@ module control_unit
     input logic [6:0] op,
     input logic [2:0] funct3,
     input logic funct7,
-    input logic Zero,
+    input logic EQ,
     output logic RegWrite,
     output logic ALUSrc,
     output logic [1:0] ImmSrc,
@@ -37,7 +37,7 @@ module control_unit
                 ALUSrc = 0;
                 ImmSrc = 2'b10;
                 Branch = 1;
-                PCSrc = Branch & ~Zero;
+                PCSrc = Branch & ~EQ;
                 ALUOp = 2'b01;
             end
             default: ;

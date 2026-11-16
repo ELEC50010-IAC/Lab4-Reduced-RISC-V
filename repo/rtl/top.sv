@@ -14,8 +14,8 @@ logic [31:0] instr;
 logic PCsrc;
 logic RegWrite;
 logic ALUsrc;
-logic ImmSrc;
-logic [2:0]ALUctrl;
+logic [1:0] ImmSrc;
+logic [2:0] ALUctrl;
 logic EQ;
 
 // Datapath
@@ -43,16 +43,16 @@ instr_mem #(.ADDRESS_WIDTH(10)) imem(
 
 control_unit control(
     .RegWrite(RegWrite),
-    .ALUctrl(ALUctrl),
-    .ALUsrc(ALUsrc),
+    .ALUCtrl(ALUctrl),
+    .ALUSrc(ALUsrc),
     .ImmSrc(ImmSrc),
-    .PCsrc(PCsrc),
+    .PCSrc(PCsrc),
     .EQ(EQ),
-    .instr(instr)
+    .op(instr[6:0]) // op
 );
 
-sign_extend signext(
-    .instr(instr),
+sign_ext signext(
+    .Instr(instr),
     .ImmSrc(ImmSrc),
     .ImmOp(ImmOp)
 );
@@ -83,7 +83,5 @@ alu #(.DATA_WIDTH(32)) alu_unit(
     .ALUout(ALUout),
     .EQ(EQ)
 );
-
-
     
 endmodule
