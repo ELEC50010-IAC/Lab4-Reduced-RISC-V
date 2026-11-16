@@ -13,6 +13,11 @@ module regfile #(
     output logic [DATA_WIDTH-1:0] a0
 );
     logic [DATA_WIDTH-1:0] registers [2**ADDR_WIDTH-1:0];
+    initial begin
+        for(int i = 0; i < 2**ADDR_WIDTH; i++) begin
+            registers[i] = 32'b0;
+        end
+    end
     assign RD1 = registers[AD1];
     assign RD2 = registers[AD2];
     assign a0 = registers[10];
