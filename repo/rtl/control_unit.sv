@@ -26,7 +26,7 @@ module control_unit
         PCSrc = 0;
         case(op)
             7'b0010011:
-            begin //addi 
+            begin //addi 
                 RegWrite = 1;
                 ALUSrc = 1;
                 ImmSrc = 2'b00;
