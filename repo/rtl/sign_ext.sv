@@ -2,7 +2,10 @@ module sign_ext #(
     INSTR_WIDTH  = 32,
     DATA_WIDTH = 32
 )(
+    // Opcode and register fields are not part of an immediate
+    /* verilator lint_off UNUSEDSIGNAL */
     input logic [INSTR_WIDTH-1:0] Instr,
+    /* verilator lint_on UNUSEDSIGNAL */
     input logic [1:0] ImmSrc,
     output logic [DATA_WIDTH-1:0] ImmOp
 );
