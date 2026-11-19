@@ -1,72 +1,73 @@
 #!/bin/bash
 
-# Usage: ./doit.sh [tests/file_tb.cpp ...]
-# Relative test paths are resolved from repo/tb, as in the group runner.
-set -u
-SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd) || exit 1
-RTL_FOLDER=$(cd "$SCRIPT_DIR/../rtl" && pwd) || exit 1
-CXX_FLAGS="-std=c++17"
-LINK_FLAGS="-lgtest -lgtest_main -lpthread"
-if [[ -n "${GTEST_ROOT:-}" ]]; then
-    GTEST_DIR=$(cd "$GTEST_ROOT" && pwd) || exit 1
-    CXX_FLAGS="$CXX_FLAGS -I\"$GTEST_DIR/include\""
-    LINK_FLAGS="-L\"$GTEST_DIR/lib\" $LINK_FLAGS"
-fi
+# This script runs the testbench
+# Usage: ./doit.sh <file1.cpp> <file2.cpp>
 
-cd "$SCRIPT_DIR" || exit 1
-shopt -s nullglob
-if [[ $# -eq 0 ]]; then
-    files=("$SCRIPT_DIR"/tests/*.cpp)
-else
-    files=("$@")
-fi
-if [[ ${#files[@]} -eq 0 ]]; then
-    echo "No test files found" >&2
-    exit 1
-fi
+# Constants
+SCRIPT_DIR=$(dirname "$(realpath "$0")")
+TEST_FOLDER=$(realpath "$SCRIPT_DIR/tests")
+RTL_FOLDER=$(realpath "$SCRIPT_DIR/../rtl")
+GREEN=$(tput setaf 2)
+RED=$(tput setaf 1)
+RESET=$(tput sgr0)
 
+# Variables
 passes=0
 fails=0
-for file in "${files[@]}"; do
-    if [[ ! -f "$file" ]]; then
-        echo "Missing test file: $file" >&2
-        fails=$((fails + 1))
-        continue
-    fi
-    base=$(basename "$file")
-    case "$base" in
-        verify.cpp) name=top ;;
-        *_tb.cpp) name=${base%_tb.cpp} ;;
-        *) echo "Unrecognised test file: $file" >&2
-           fails=$((fails + 1)); continue ;;
-    esac
-    source_dir=$(cd "$(dirname "$file")" && pwd) || exit 1
-    source_file="$source_dir/$base"
-    echo "Testing $base ($name)"
 
-    # Each target must build its own executable; a failed build cannot reuse one.
-    rm -rf "$SCRIPT_DIR/obj_dir" || exit 1
-    if ! verilator -Wall --trace --top-module "$name" \
-            -cc "$RTL_FOLDER/$name.sv" -y "$RTL_FOLDER" \
-            --exe "$source_file" --prefix Vdut -o Vdut \
-            -CFLAGS "$CXX_FLAGS" -LDFLAGS "$LINK_FLAGS"; then
-        echo "Verilator failed: $base" >&2
-        fails=$((fails + 1))
-        continue
+# Handle terminal arguments
+if [[ $# -eq 0 ]]; then
+    # If no arguments provided, run all tests
+    files=(${TEST_FOLDER}/*.cpp)
+else
+    # If arguments provided, use them as input files
+    files=("$@")
+fi
+
+# Cleanup
+rm -rf obj_dir
+
+cd $SCRIPT_DIR
+
+# Iterate through files
+for file in "${files[@]}"; do
+    name=$(basename "$file" _tb.cpp | cut -f1 -d\-)
+    
+    # If verify.cpp -> we are testing the top module
+    if [ $name == "verify.cpp" ]; then
+        name="top"
     fi
-    if ! make -j 2 -C obj_dir -f Vdut.mk; then
-        echo "C++ build failed: $base" >&2
-        fails=$((fails + 1))
-        continue
-    fi
-    # Preserve this working directory for compile.sh and ../rtl/program.hex.
-    if ./obj_dir/Vdut; then
-        passes=$((passes + 1))
+
+    # Translate Verilog -> C++ including testbench
+    verilator   -Wall --trace \
+                -cc ${RTL_FOLDER}/${name}.sv \
+                --exe ${file} \
+                -y ${RTL_FOLDER} \
+                --prefix "Vdut" \
+                -o Vdut \
+                -LDFLAGS "-lgtest -lgtest_main -lpthread" \
+
+    # Build C++ project with automatically generated Makefile
+    make -j -C obj_dir/ -f Vdut.mk
+    
+    # Run executable simulation file
+    ./obj_dir/Vdut
+    
+    # Check if the test succeeded or not
+    if [ $? -eq 0 ]; then
+        ((passes++))
     else
-        echo "Simulation failed: $base" >&2
-        fails=$((fails + 1))
+        ((fails++))
     fi
+    
 done
 
-echo "Result: $passes test file(s) passed, $fails failed"
-[[ $fails -eq 0 ]]
+# Exit as a pass or fail (for CI purposes)
+if [ $fails -eq 0 ]; then
+    echo "${GREEN}Success! All ${passes} test(s) passed!"
+    exit 0
+else
+    total=$((passes + fails))
+    echo "${RED}Failure! Only ${passes} test(s) passed out of ${total}."
+    exit 1
+fi

@@ -1,11 +1,8 @@
 module control_unit
 (
     input logic [6:0] op,
-    // The reduced opcode-only decoder retains these interface inputs
-    /* verilator lint_off UNUSEDSIGNAL */
     input logic [2:0] funct3,
     input logic funct7,
-    /* verilator lint_on UNUSEDSIGNAL */
     input logic EQ,
     output logic RegWrite,
     output logic ALUSrc,
