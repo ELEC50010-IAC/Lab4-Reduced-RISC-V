@@ -1,0 +1,182 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 720" width="1100" height="720" font-family="Helvetica, Arial, sans-serif">
+  <title>Team16 single-cycle RV32I datapath by package</title>
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#333"/>
+    </marker>
+    <style>
+      .w   { stroke:#333; stroke-width:1.6; fill:none; }
+      .lbl { font-size:11px; fill:#333; }
+      .sig { font-size:10.5px; fill:#1f5fbf; font-style:italic; }
+      .ttl { font-size:14px; font-weight:bold; fill:#111; }
+      .sub { font-size:10.5px; fill:#555; }
+      .A   { fill:#fde7cf; stroke:#c46f12; stroke-width:2.2; }
+      .B   { fill:#dcf2df; stroke:#2e8b47; stroke-width:2.2; }
+      .C   { fill:#dbe9fb; stroke:#2f6db5; stroke-width:2.2; }
+      .D   { fill:#efe3f8; stroke:#7a3fb0; stroke-width:2.2; }
+      .new { stroke-dasharray:6 4; }
+      .bt  { font-size:13px; font-weight:bold; fill:#fff; text-anchor:middle; }
+    </style>
+  </defs>
+
+  <rect width="1100" height="720" fill="#ffffff"/>
+  <text x="20" y="28" style="font-size:18px;font-weight:bold;fill:#111">Single-cycle RV32I datapath: who builds what (sprint, done by Wed 25 Nov)</text>
+  <text x="20" y="46" class="sub">Solid outline = exists today (Lab 4 CPU: addi + bne only). Dashed = not built yet. Blue italic = control signals. Names as agreed in interfaces.md.</text>
+
+  <!-- ===== Blocks ===== -->
+  <!-- C: PC next mux (changed: 3 inputs) -->
+  <path d="M40,240 L70,252 L70,318 L40,330 z" class="C new"/>
+  <text x="34" y="236" class="sig">PCSrc</text>
+
+  <!-- C: PC -->
+  <rect x="100" y="250" width="70" height="60" rx="4" class="C"/>
+  <text x="135" y="285" class="ttl" text-anchor="middle">PC</text>
+
+  <!-- C: Instruction memory -->
+  <rect x="210" y="220" width="120" height="120" rx="4" class="C"/>
+  <text x="270" y="262" class="ttl" text-anchor="middle">Instruction</text>
+  <text x="270" y="279" class="ttl" text-anchor="middle">Memory</text>
+  <text x="270" y="300" class="sub" text-anchor="middle">move to 0xBFC00000,</text>
+  <text x="270" y="313" class="sub" text-anchor="middle">grow to 4 KB</text>
+
+  <!-- A: Control unit -->
+  <rect x="400" y="62" width="170" height="100" rx="4" class="A"/>
+  <text x="485" y="84" class="ttl" text-anchor="middle">Control Unit</text>
+  <text x="485" y="100" class="sub" text-anchor="middle">today: 2 opcodes → all RV32I</text>
+  <text x="410" y="120" class="sig">PCSrc · ResultSrc · MemWrite</text>
+  <text x="410" y="135" class="sig">ALUControl · ALUSrc · ImmSrc</text>
+  <text x="410" y="150" class="sig">RegWrite</text>
+
+  <!-- B: Register file -->
+  <rect x="420" y="220" width="140" height="120" rx="4" class="B"/>
+  <text x="490" y="242" class="ttl" text-anchor="middle">Register File</text>
+  <text x="426" y="262" class="lbl">A1</text><text x="554" y="262" class="lbl" text-anchor="end">RD1</text>
+  <text x="426" y="285" class="lbl">A2</text><text x="554" y="305" class="lbl" text-anchor="end">RD2</text>
+  <text x="426" y="308" class="lbl">A3</text>
+  <text x="426" y="331" class="lbl">WD3</text>
+  <text x="535" y="216" class="sig">RegWrite</text>
+
+  <!-- A: Sign extend -->
+  <rect x="420" y="380" width="140" height="56" rx="4" class="A"/>
+  <text x="490" y="404" class="ttl" text-anchor="middle">Sign Extend</text>
+  <text x="490" y="422" class="sub" text-anchor="middle">has I/S/B · add U/J</text>
+  <text x="430" y="452" class="sig">ImmSrc</text>
+
+  <!-- B: ALUSrc mux -->
+  <path d="M600,272 L625,282 L625,342 L600,352 z" class="B"/>
+  <text x="590" y="266" class="sig">ALUSrc</text>
+
+  <!-- B: ALU -->
+  <path d="M660,230 L740,260 L740,330 L660,360 L660,310 L675,295 L660,280 z" class="B"/>
+  <text x="708" y="298" class="ttl" text-anchor="middle">ALU</text>
+  <text x="708" y="313" class="sub" text-anchor="middle">add → all ops</text>
+  <text x="664" y="224" class="sig">ALUControl</text>
+
+  <!-- D: Data memory (new) -->
+  <rect x="790" y="230" width="130" height="120" rx="4" class="D new"/>
+  <text x="855" y="268" class="ttl" text-anchor="middle">Data</text>
+  <text x="855" y="285" class="ttl" text-anchor="middle">Memory</text>
+  <text x="855" y="303" class="sub" text-anchor="middle">byte / half / word</text>
+  <text x="796" y="262" class="lbl">A</text>
+  <text x="796" y="333" class="lbl">WD</text>
+  <text x="914" y="294" class="lbl" text-anchor="end">RD</text>
+  <text x="835" y="224" class="sig">MemWrite</text>
+
+  <!-- D: Result mux (new) -->
+  <path d="M970,250 L995,260 L995,340 L970,350 z" class="D new"/>
+  <text x="950" y="244" class="sig">ResultSrc</text>
+
+  <!-- C: PC+4 adder -->
+  <path d="M210,470 L270,485 L270,515 L210,530 L210,507 L218,500 L210,493 z" class="C"/>
+  <text x="246" y="504" class="lbl" text-anchor="middle">+</text>
+  <text x="196" y="522" class="lbl" text-anchor="end">4</text>
+
+  <!-- C: PCTarget adder (exists inside pc_top) -->
+  <path d="M640,450 L700,465 L700,495 L640,510 L640,487 L648,480 L640,473 z" class="C"/>
+  <text x="676" y="484" class="lbl" text-anchor="middle">+</text>
+
+  <!-- ===== Package badges ===== -->
+  <g>
+    <circle cx="100" cy="250" r="11" fill="#2f6db5"/><text x="100" y="255" class="bt">C</text>
+    <circle cx="210" cy="220" r="11" fill="#2f6db5"/><text x="210" y="225" class="bt">C</text>
+    <circle cx="400" cy="62" r="11" fill="#c46f12"/><text x="400" y="67" class="bt">A</text>
+    <circle cx="420" cy="220" r="11" fill="#2e8b47"/><text x="420" y="225" class="bt">B</text>
+    <circle cx="420" cy="380" r="11" fill="#c46f12"/><text x="420" y="385" class="bt">A</text>
+    <circle cx="745" cy="255" r="11" fill="#2e8b47"/><text x="745" y="260" class="bt">B</text>
+    <circle cx="790" cy="230" r="11" fill="#7a3fb0"/><text x="790" y="235" class="bt">D</text>
+    <circle cx="1007" cy="258" r="11" fill="#7a3fb0"/><text x="1007" y="263" class="bt">D</text>
+  </g>
+
+  <!-- ===== Wires ===== -->
+  <path d="M70,280 L100,280" class="w" marker-end="url(#arr)"/>
+  <path d="M170,280 L210,280" class="w" marker-end="url(#arr)"/>
+  <text x="176" y="274" class="lbl">PC</text>
+  <path d="M185,280 L185,480 L210,480" class="w" marker-end="url(#arr)"/>
+  <path d="M185,480 L185,545 L615,545 L615,462 L640,462" class="w" marker-end="url(#arr)"/>
+  <path d="M200,520 L210,520" class="w" marker-end="url(#arr)"/>
+  <path d="M270,500 L300,500 L300,570 L20,570 L20,258 L40,258" class="w" marker-end="url(#arr)"/>
+  <path d="M300,570 L950,570 L950,335 L970,335" class="w" marker-end="url(#arr)"/>
+  <text x="304" y="563" class="lbl">PCPlus4</text>
+  <path d="M700,480 L720,480 L720,595 L10,595 L10,284 L40,284" class="w" marker-end="url(#arr)"/>
+  <text x="724" y="590" class="lbl">PCTarget</text>
+  <path d="M760,295 L760,200 L30,200 L30,310 L40,310" class="w" marker-end="url(#arr)"/>
+  <text x="34" y="194" class="lbl">ALUResult (jalr target)</text>
+
+  <path d="M330,280 L360,280" class="w"/>
+  <path d="M360,112 L360,408" class="w"/>
+  <path d="M360,112 L400,112" class="w" marker-end="url(#arr)"/>
+  <text x="354" y="106" class="lbl" text-anchor="end">op, funct3, funct7b5</text>
+  <path d="M360,258 L420,258" class="w" marker-end="url(#arr)"/>
+  <path d="M360,281 L420,281" class="w" marker-end="url(#arr)"/>
+  <path d="M360,304 L420,304" class="w" marker-end="url(#arr)"/>
+  <text x="366" y="254" class="lbl">rs1</text>
+  <text x="366" y="277" class="lbl">rs2</text>
+  <text x="366" y="300" class="lbl">rd</text>
+  <path d="M360,408 L420,408" class="w" marker-end="url(#arr)"/>
+  <text x="366" y="402" class="lbl">Instr</text>
+  <text x="334" y="274" class="lbl">Instr</text>
+
+  <path d="M560,258 L660,258" class="w" marker-end="url(#arr)"/>
+  <text x="604" y="252" class="lbl">SrcA</text>
+  <path d="M560,300 L600,300" class="w" marker-end="url(#arr)"/>
+  <path d="M580,300 L580,370 L775,370 L775,330 L790,330" class="w" marker-end="url(#arr)"/>
+  <path d="M560,408 L590,408 L590,330 L600,330" class="w" marker-end="url(#arr)"/>
+  <path d="M590,408 L590,498 L640,498" class="w" marker-end="url(#arr)"/>
+  <text x="564" y="402" class="lbl">ImmExt</text>
+  <path d="M625,312 L660,312" class="w" marker-end="url(#arr)"/>
+  <text x="628" y="306" class="lbl">SrcB</text>
+  <path d="M740,295 L760,295 L760,258 L790,258" class="w" marker-end="url(#arr)"/>
+  <path d="M760,215 L940,215 L940,268 L970,268" class="w" marker-end="url(#arr)"/>
+  <text x="790" y="210" class="lbl">ALUResult</text>
+  <path d="M700,245 L700,140 L570,140" class="w" marker-end="url(#arr)"/>
+  <text x="704" y="160" class="lbl">Zero / flags</text>
+  <text x="704" y="174" class="sub">(A + B decide)</text>
+  <path d="M920,300 L970,300" class="w" marker-end="url(#arr)"/>
+  <path d="M995,300 L1030,300 L1030,620 L390,620 L390,327 L420,327" class="w" marker-end="url(#arr)"/>
+  <text x="1034" y="296" class="lbl">Result</text>
+
+  <!-- ===== Legend ===== -->
+  <g transform="translate(790,58)">
+    <rect x="0" y="0" width="292" height="138" rx="6" fill="#fafafa" stroke="#bbb"/>
+    <text x="12" y="20" style="font-size:12px;font-weight:bold;fill:#111">Packages (owner negotiated)</text>
+    <circle cx="20" cy="38" r="9" fill="#c46f12"/><text x="20" y="42" class="bt" style="font-size:11px">A</text>
+    <text x="36" y="42" class="lbl">Control Unit, Sign Extend</text>
+    <circle cx="20" cy="60" r="9" fill="#2e8b47"/><text x="20" y="64" class="bt" style="font-size:11px">B</text>
+    <text x="36" y="64" class="lbl">ALU, Register File, ALUSrc mux</text>
+    <circle cx="20" cy="82" r="9" fill="#2f6db5"/><text x="20" y="86" class="bt" style="font-size:11px">C</text>
+    <text x="36" y="86" class="lbl">PC, adders, PC mux, Instr Memory</text>
+    <circle cx="20" cy="104" r="9" fill="#7a3fb0"/><text x="20" y="108" class="bt" style="font-size:11px">D</text>
+    <text x="36" y="108" class="lbl">Data Memory, Result mux, top.sv</text>
+    <text x="12" y="128" class="sub">Tests: A tests D → D tests C → C tests B → B tests A</text>
+  </g>
+
+  <!-- ===== What's left per package ===== -->
+  <g transform="translate(20,640)">
+    <text x="0" y="0" style="font-size:12px;font-weight:bold;fill:#111">Left to build by Wed 25 Nov</text>
+    <text x="0" y="18" class="lbl"><tspan font-weight="bold" fill="#c46f12">A</tspan> decode all RV32I opcodes, new control signals, U/J immediates</text>
+    <text x="0" y="34" class="lbl"><tspan font-weight="bold" fill="#2e8b47">B</tspan> all ALU ops (sub, and, or, xor, slt(u), shifts), branch flags, per-instruction test programs</text>
+    <text x="540" y="18" class="lbl"><tspan font-weight="bold" fill="#2f6db5">C</tspan> 3-way PC mux (jal/jalr), reset 0xBFC00000, 4 KB IMem, F1 asm, pdf.s setup, build script</text>
+    <text x="540" y="34" class="lbl"><tspan font-weight="bold" fill="#7a3fb0">D</tspan> data memory, result mux, wire each module into top.sv as it lands, verify.cpp</text>
+    <text x="0" y="60" class="sub">Diagram wrong or out of date? Open a "Diagram error / change request" issue.</text>
+  </g>
+</svg>
