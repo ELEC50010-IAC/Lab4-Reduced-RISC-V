@@ -28,7 +28,7 @@ assign rs1 = instr[19:15];
 assign rs2 = instr[24:20];
 assign rd = instr[11:7];
 
-pc_top #(.WIDTH(32)) pc(
+pc_top #(.WIDTH(32)) pc_reg(
     .clk(clk),
     .rst(rst),
     .PCsrc(PCsrc),
@@ -48,7 +48,9 @@ control_unit control(
     .ImmSrc(ImmSrc),
     .PCSrc(PCsrc),
     .EQ(EQ),
-    .op(instr[6:0]) // op
+    .op(instr[6:0]), // op
+    .funct3(instr[14:12]),
+    .funct7(instr[30])
 );
 
 sign_ext signext(
