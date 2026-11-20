@@ -51,10 +51,11 @@ control_unit control(
     .op(instr[6:0]) // op
 );
 
+// The Lab 4 decoder selects I, S or B with its two-bit ImmSrc.
 sign_ext signext(
     .Instr(instr),
-    .ImmSrc(ImmSrc),
-    .ImmOp(ImmOp)
+    .ImmSrc({1'b0, ImmSrc}),
+    .ImmExt(ImmOp)
 );
 
 regfile #(.DATA_WIDTH(32), .ADDR_WIDTH(5)) rf(
