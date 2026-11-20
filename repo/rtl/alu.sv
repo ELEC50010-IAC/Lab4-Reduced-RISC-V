@@ -18,6 +18,9 @@ module alu #(
         4'b0100: ALUResult = SrcA ^ SrcB;
         4'b0101: ALUResult = {{(DATA_WIDTH-1){1'b0}}, $signed(SrcA) < $signed(SrcB)};
         4'b0110: ALUResult = {{(DATA_WIDTH-1){1'b0}}, SrcA < SrcB};
+        4'b0111: ALUResult = SrcA << SrcB[4:0];
+        4'b1000: ALUResult = SrcA >> SrcB[4:0];
+        4'b1001: ALUResult = $signed(SrcA) >>> SrcB[4:0];
         default: ALUResult = 0;
         endcase
     end

@@ -1,5 +1,5 @@
 /*
- *  Verifies the ALU: add, sub, and, or, xor, slt, sltu, the Zero flag,
+ *  Verifies the ALU: add, sub, and, or, xor, slt, sltu, sll, srl, sra and the Zero flag,
  *  and that unused ALUControl codes give 0.
  */
 
@@ -153,6 +153,75 @@ TEST_F(AluTestbench, SltuTest)
     top->SrcB = 1;
     top->eval();
     EXPECT_EQ(top->ALUResult, 0u);
+}
+
+TEST_F(AluTestbench, SllTest)
+{
+    top->ALUControl = 0b0111; // sll
+
+    // Case 1: basic shift left, 0001 shifts twice to 0100
+    top->SrcA = 0b0001;
+    top->SrcB = 2;
+    top->eval();
+    EXPECT_EQ(top->ALUResult, 0b0100u);
+
+    // Case 2: top bit falls off the end (doesn't wrap around), bottom 1 moves to 2
+    top->SrcA = 0x80000001;
+    top->SrcB = 1;
+    top->eval();
+    EXPECT_EQ(top->ALUResult, 2u);
+
+    // Case 3: only the bottom 5 bits of SrcB count, 100001 -> 00001, so shift by 1
+    top->SrcA = 1;
+    top->SrcB = 0b100001;
+    top->eval();
+    EXPECT_EQ(top->ALUResult, 2u);
+}
+
+TEST_F(AluTestbench, SrlTest)
+{
+    top->ALUControl = 0b1000; // srl
+
+    // Case 1: basic shift right, 1000 shifts twice to 0010
+    top->SrcA = 0b1000;
+    top->SrcB = 2;
+    top->eval();
+    EXPECT_EQ(top->ALUResult, 0b0010u);
+
+    // Case 2: 0s come in from the left
+    top->SrcA = 0xF0000000;
+    top->SrcB = 4;
+    top->eval();
+    EXPECT_EQ(top->ALUResult, 0x0F000000u);
+
+    // Case 3: only the bottom 5 bits of SrcB count, 100001 -> 00001, so shift by 1
+    top->SrcA = 0b1000;
+    top->SrcB = 0b100001;
+    top->eval();
+    EXPECT_EQ(top->ALUResult, 0b0100u);
+}
+
+TEST_F(AluTestbench, SraTest)
+{
+    top->ALUControl = 0b1001; // sra
+
+    // Case 1: top bit is 1, so 1s come in (remains negative after shift)
+    top->SrcA = 0xF0000000;
+    top->SrcB = 4;
+    top->eval();
+    EXPECT_EQ(top->ALUResult, 0xFF000000u);
+
+    // Case 2: top bit is 0, so 0s come in (shift acts like srl)
+    top->SrcA = 0x70000000;
+    top->SrcB = 4;
+    top->eval();
+    EXPECT_EQ(top->ALUResult, 0x07000000u);
+
+    // Case 3: only the bottom 5 bits of SrcB count, 100100 -> 00100, so shift by 4
+    top->SrcA = 0xF0000000;
+    top->SrcB = 0b100100;
+    top->eval();
+    EXPECT_EQ(top->ALUResult, 0xFF000000u);
 }
 
 TEST_F(AluTestbench, ZeroTest)
