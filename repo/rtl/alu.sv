@@ -1,18 +1,18 @@
 module alu #(
     DATA_WIDTH = 32
 )(
-    input logic [DATA_WIDTH-1:0] ALUop1,
-    input logic [DATA_WIDTH-1:0] ALUop2,
-    input logic [2:0] ALUctrl,
-    output logic [DATA_WIDTH-1:0] ALUout,
-    output logic EQ
+    input logic [DATA_WIDTH-1:0] SrcA,
+    input logic [DATA_WIDTH-1:0] SrcB,
+    input logic [2:0] ALUControl,
+    output logic [DATA_WIDTH-1:0] ALUResult,
+    output logic Zero
 );
-    assign EQ = (ALUop1 == ALUop2);
+    assign Zero = (SrcA == SrcB);
 
     always_comb begin
-        case(ALUctrl)
-        3'b000: ALUout = ALUop1 + ALUop2;
-        default: ALUout = 0;
+        case(ALUControl)
+        3'b000: ALUResult = SrcA + SrcB;
+        default: ALUResult = 0;
         endcase
     end
 endmodule

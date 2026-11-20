@@ -12,9 +12,9 @@ class RegfileTestbench : public Testbench
 protected:
     void initializeInputs() override
     {
-        top->AD1 = 0;
-        top->AD2 = 0;
-        top->AD3 = 0;
+        top->A1 = 0;
+        top->A2 = 0;
+        top->A3 = 0;
         top->WD3 = 0;
         top->WE3 = 0;
         top->clk = 0;
@@ -23,13 +23,13 @@ protected:
 
 TEST_F(RegfileTestbench, WriteThenReadTest)
 {
-    top->AD3 = 5;
+    top->A3 = 5;
     top->WD3 = 10;
     top->WE3 = 1;
 
     runSimulation(1);          // one cycle: the write happens at the rising edge
 
-    top->AD1 = 5;
+    top->A1 = 5;
     top->eval();               // reads are asynchronous, so no clock needed
 
     EXPECT_EQ(top->RD1, 10);
@@ -37,8 +37,8 @@ TEST_F(RegfileTestbench, WriteThenReadTest)
 
 TEST_F(RegfileTestbench, WriteDisabledTest)
 {
-    top->AD1 = 5;
-    top->AD3 = 5;
+    top->A1 = 5;
+    top->A3 = 5;
     top->WD3 = 10;
     top->WE3 = 0;
     top->eval();
@@ -56,13 +56,13 @@ TEST_F(RegfileTestbench, WriteDisabledTest)
 
 TEST_F(RegfileTestbench, X0StaysZeroTest)
 {
-    top->AD3 = 0;
+    top->A3 = 0;
     top->WD3 = 10;
     top->WE3 = 1;
 
     runSimulation(1);
 
-    top->AD1 = 0;
+    top->A1 = 0;
     top->eval();
     EXPECT_EQ(top->RD1, 0);
 
@@ -70,7 +70,7 @@ TEST_F(RegfileTestbench, X0StaysZeroTest)
 
 TEST_F(RegfileTestbench, A0OutputTest)
 {
-    top->AD3 = 10;
+    top->A3 = 10;
     top->WD3 = (top->a0 > 0) ? 0 : 1;
     top->WE3 = 1;
     
@@ -84,23 +84,23 @@ TEST_F(RegfileTestbench, A0OutputTest)
 TEST_F(RegfileTestbench, TwoReadPortsTest)
 {
     top->WE3 = 1;
-    top->AD3 = 5;
+    top->A3 = 5;
     top->WD3 = 10;
     runSimulation(1);
 
-    top->AD3 = 6;
+    top->A3 = 6;
     top->WD3 = 11;
     runSimulation(1);
 
-    top->AD1 = 5;
-    top->AD2 = 6;
+    top->A1 = 5;
+    top->A2 = 6;
     top->eval();
     EXPECT_EQ(top->RD1, 10);
     EXPECT_EQ(top->RD2, 11);
 
     // now swap the addresses: each port should follow its own address
-    top->AD1 = 6;
-    top->AD2 = 5;
+    top->A1 = 6;
+    top->A2 = 5;
     top->eval();
     EXPECT_EQ(top->RD1, 11);
     EXPECT_EQ(top->RD2, 10);

@@ -2,9 +2,9 @@ module regfile #(
     DATA_WIDTH = 32,
     ADDR_WIDTH = 5
 )(
-    input logic [ADDR_WIDTH-1:0] AD1,
-    input logic [ADDR_WIDTH-1:0] AD2,
-    input logic [ADDR_WIDTH-1:0] AD3,
+    input logic [ADDR_WIDTH-1:0] A1,
+    input logic [ADDR_WIDTH-1:0] A2,
+    input logic [ADDR_WIDTH-1:0] A3,
     input logic [DATA_WIDTH-1:0] WD3,
     input logic WE3,
     input logic clk,
@@ -18,12 +18,12 @@ module regfile #(
             registers[i] = 32'b0;
         end
     end
-    assign RD1 = registers[AD1];
-    assign RD2 = registers[AD2];
+    assign RD1 = registers[A1];
+    assign RD2 = registers[A2];
     assign a0 = registers[10];
 
     always_ff @(posedge clk) begin
-        if(WE3 == 1 && AD3 != 0)
-            registers[AD3] <= WD3;    
+        if(WE3 == 1 && A3 != 0)
+            registers[A3] <= WD3;    
     end
 endmodule

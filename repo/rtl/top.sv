@@ -58,9 +58,9 @@ sign_ext signext(
 );
 
 regfile #(.DATA_WIDTH(32), .ADDR_WIDTH(5)) rf(
-    .AD1(rs1),
-    .AD2(rs2),
-    .AD3(rd),
+    .A1(rs1),
+    .A2(rs2),
+    .A3(rd),
     .WD3(ALUout),
     .WE3(RegWrite),
     .clk(clk),
@@ -77,11 +77,11 @@ mux #(.DATA_WIDTH(32)) alu_src_mux(
 );
 
 alu #(.DATA_WIDTH(32)) alu_unit(
-    .ALUop1(RD1),
-    .ALUop2(regOp2),
-    .ALUctrl(ALUctrl),
-    .ALUout(ALUout),
-    .EQ(EQ)
+    .SrcA(RD1),
+    .SrcB(regOp2),
+    .ALUControl(ALUctrl),
+    .ALUResult(ALUout),
+    .Zero(EQ)
 );
     
 endmodule
