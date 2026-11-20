@@ -1,5 +1,5 @@
 /*
- *  Verifies the ALU: add, sub, and, or, xor, the Zero flag,
+ *  Verifies the ALU: add, sub, and, or, xor, slt, sltu, the Zero flag,
  *  and that unused ALUControl codes give 0.
  */
 
@@ -105,6 +105,52 @@ TEST_F(AluTestbench, XorTest)
     // Case 2: an input xor itself clears every bit
     top->SrcA = 0x12345678;
     top->SrcB = 0x12345678;
+    top->eval();
+    EXPECT_EQ(top->ALUResult, 0u);
+}
+
+TEST_F(AluTestbench, SltTest)
+{
+    top->ALUControl = 0b0101; // slt
+
+    // Case 1: 3 < 5 is true, so result is 1
+    top->SrcA = 3;
+    top->SrcB = 5;
+    top->eval();
+    EXPECT_EQ(top->ALUResult, 1u);
+
+    // Case 2: 5 < 3 is false, so result is 0 
+    top->SrcA = 5;
+    top->SrcB = 3;
+    top->eval();
+    EXPECT_EQ(top->ALUResult, 0u);
+
+    // Case 3: signed, all ones is -1, -1 < 1 is true, so result is 1
+    top->SrcA = 0xFFFFFFFF;
+    top->SrcB = 1;
+    top->eval();
+    EXPECT_EQ(top->ALUResult, 1u);
+}
+
+TEST_F(AluTestbench, SltuTest)
+{
+    top->ALUControl = 0b0110; // sltu
+
+    // Case 1: 3 < 5 is true, so result is 1
+    top->SrcA = 3;
+    top->SrcB = 5;
+    top->eval();
+    EXPECT_EQ(top->ALUResult, 1u);
+
+    // Case 2: 5 < 3 is false, so result is 0 
+    top->SrcA = 5;
+    top->SrcB = 3;
+    top->eval();
+    EXPECT_EQ(top->ALUResult, 0u);
+
+    // Case 3: unsigned, all ones is 4,294,967,295, which isn't < 1, so result is 0
+    top->SrcA = 0xFFFFFFFF;
+    top->SrcB = 1;
     top->eval();
     EXPECT_EQ(top->ALUResult, 0u);
 }
