@@ -1,5 +1,5 @@
 /*
- *  Verifies the ALU: addition (ALUControl = 0), the Zero flag,
+ *  Verifies the ALU: add, sub, and, or, xor, the Zero flag,
  *  and that unused ALUControl codes give 0.
  */
 
@@ -41,6 +41,74 @@ TEST_F(AluTestbench, WrapAroundTest)
     EXPECT_EQ(top->ALUResult, 0u); // 0xFFFFFFFF + 1 wraps round to 0
 }
 
+TEST_F(AluTestbench, SubTest)
+{
+    top->ALUControl = 0b0001; // sub
+
+    // Case 1: simple subtraction
+    top->SrcA = 7;
+    top->SrcB = 4;
+    top->eval();
+    EXPECT_EQ(top->ALUResult, 3u);
+
+    // Case 2: negative result wraps round. 3 - 4 = -1 stored as all ones
+    top->SrcA = 3;
+    top->SrcB = 4;
+    top->eval();
+    EXPECT_EQ(top->ALUResult, 0xFFFFFFFFu);
+}
+
+TEST_F(AluTestbench, AndTest)
+{
+    top->ALUControl = 0b0010; // and
+
+    // Case 1: a result bit is 1 only when both input bits are 1
+    top->SrcA = 0b1100;
+    top->SrcB = 0b1010;
+    top->eval();
+    EXPECT_EQ(top->ALUResult, 0b1000u);
+
+    // Case 2: and with 0 clears every bit
+    top->SrcA = 0x12345678;
+    top->SrcB = 0;
+    top->eval();
+    EXPECT_EQ(top->ALUResult, 0u);
+}
+
+TEST_F(AluTestbench, OrTest)
+{
+    top->ALUControl = 0b0011; // or
+
+    // Case 1: a result bit is 1 if either or both input bits are 1
+    top->SrcA = 0b1100;
+    top->SrcB = 0b1010;
+    top->eval();
+    EXPECT_EQ(top->ALUResult, 0b1110u);
+
+    // Case 2: or with 0 leaves input unchanged
+    top->SrcA = 0x12345678;
+    top->SrcB = 0;
+    top->eval();
+    EXPECT_EQ(top->ALUResult, 0x12345678u);
+}
+
+TEST_F(AluTestbench, XorTest)
+{
+    top->ALUControl = 0b0100; // xor
+
+    // Case 1: a result bit is 1 when the two input bits are different
+    top->SrcA = 0b1100;
+    top->SrcB = 0b1010;
+    top->eval();
+    EXPECT_EQ(top->ALUResult, 0b0110u);
+
+    // Case 2: an input xor itself clears every bit
+    top->SrcA = 0x12345678;
+    top->SrcB = 0x12345678;
+    top->eval();
+    EXPECT_EQ(top->ALUResult, 0u);
+}
+
 TEST_F(AluTestbench, ZeroTest)
 {
     top->ALUControl = 0;
@@ -69,7 +137,6 @@ TEST_F(AluTestbench, UnusedCodeGivesZeroTest)
     top->eval();
     EXPECT_EQ(top->ALUResult, 0u);
 }
-
 
 int main(int argc, char **argv)
 {

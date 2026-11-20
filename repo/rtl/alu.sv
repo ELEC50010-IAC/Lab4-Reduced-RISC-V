@@ -12,6 +12,10 @@ module alu #(
     always_comb begin
         case(ALUControl)
         4'b0000: ALUResult = SrcA + SrcB;
+        4'b0001: ALUResult = SrcA - SrcB;
+        4'b0010: ALUResult = SrcA & SrcB;
+        4'b0011: ALUResult = SrcA | SrcB;
+        4'b0100: ALUResult = SrcA ^ SrcB;
         default: ALUResult = 0;
         endcase
     end
