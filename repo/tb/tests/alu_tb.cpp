@@ -1,5 +1,6 @@
 /*
- *  Verifies the ALU: addition (ALUControl = 0) and the Zero flag.
+ *  Verifies the ALU: addition (ALUControl = 0), the Zero flag,
+ *  and that unused ALUControl codes give 0.
  */
 
 #include "base_testbench.h"
@@ -54,6 +55,19 @@ TEST_F(AluTestbench, ZeroTest)
     top->SrcB = 0xFFFFFFFE;
     top->eval();
     EXPECT_EQ(top->Zero, 0);
+}
+
+TEST_F(AluTestbench, UnusedCodeGivesZeroTest)
+{
+    // 1111 isn't an agreed operation (only 0000 to 1001 used),
+    // so the ALU should fall through to default and give 0
+    top->ALUControl = 0b1111;
+
+    // non-zero inputs: if default didn't work, would see 7 instead of 0 
+    top->SrcA = 3;
+    top->SrcB = 4;
+    top->eval();
+    EXPECT_EQ(top->ALUResult, 0u);
 }
 
 

@@ -79,7 +79,7 @@ mux #(.DATA_WIDTH(32)) alu_src_mux(
 alu #(.DATA_WIDTH(32)) alu_unit(
     .SrcA(RD1),
     .SrcB(regOp2),
-    .ALUControl(ALUctrl),
+    .ALUControl({1'b0, ALUctrl}),
     .ALUResult(ALUout),
     .Zero(EQ)
 );
