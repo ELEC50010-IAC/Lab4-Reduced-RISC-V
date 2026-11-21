@@ -90,7 +90,7 @@ C also owns: F1 in RV32I assembly, the `pdf.s` data file and its output check, a
 | `WE` | in | 1 | ← `MemWrite` |
 | `A` | in | 32 | ← `ALUResult`; range `0x00000000`–`0x0001FFFF` |
 | `WD` | in | 32 | ← `RD2` |
-| `funct3` | in | 3 | **decide** (D): needed for byte/half access? |
+| `funct3` | in | 3 | `Instr[14:12]`; data memory decodes size (byte/half/word) and signedness itself |
 | `RD` | out | 32 | → result mux |
 
 **`top.sv`** (changed): ports `clk`, `rst`, `a0` (keep). `a0[7:0]` drives the 8 Vbuddy LEDs for F1; the testbench passes it to Vbuddy. **Decide**: F1 trigger input? D also owns `verify.cpp`.
@@ -114,7 +114,7 @@ C also owns: F1 in RV32I assembly, the `pdf.s` data file and its output check, a
 | # | Question | Who decides |
 |---|---|---|
 | 1 | **Branch decision:** ALU outputs flags (Zero, Negative, Carry, oVerflow) and Control uses them with `funct3`, *or* a comparator outputs one `BranchTaken` signal? | A + B |
-| 2 | Does data memory receive `funct3` for `lb`/`lh`/`lbu`/`lhu`/`sb`/`sh`? | D |
+| 2 | ~~Does data memory receive `funct3`?~~ **Decided: yes.** One 3-bit signal to carry through the pipeline, and it keeps the work out of A's package. | D |
 | 3 | **`lui` / `auipc` path:** (a) `lui` passes ImmExt through the result mux, and `auipc` uses a new `ALUSrcA` mux (PC into the ALU); *or* (b) `auipc` reuses C's `PCTarget` through the result mux, and `lui` passes SrcB through the ALU. | A (with B, C, D) |
 | 4 | Does F1 need a trigger input on `top.sv` (Vbuddy button, as in Lab 3)? | C + D |
 | 5 | Where does the `pdf.s` data get loaded in data memory (check the brief and `pdf.s`)? | C + D |
