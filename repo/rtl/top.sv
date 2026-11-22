@@ -20,7 +20,12 @@ logic EQ;
 
 // Datapath
 logic [31:0]  ImmOp;
-logic [31:0] RD1, RD2, regOp2, ALUout;
+logic [31:0] RD1, RD2, regOp2, ALUout, ReadData, Result;
+
+logic [1:0] ResultSrc;
+logic       MemWrite;
+assign ResultSrc = 2'b00;  // TEMP until A's control unit drives it
+assign MemWrite  = 1'b0;   // TEMP: no stores yet
 
 // Instruction Fields
 logic [4:0] rs1, rs2, rd;
@@ -61,7 +66,7 @@ regfile #(.DATA_WIDTH(32), .ADDR_WIDTH(5)) rf(
     .AD1(rs1),
     .AD2(rs2),
     .AD3(rd),
-    .WD3(ALUout),
+    .WD3(Result),
     .WE3(RegWrite),
     .clk(clk),
     .RD1(RD1),
@@ -82,6 +87,26 @@ alu #(.DATA_WIDTH(32)) alu_unit(
     .ALUctrl(ALUctrl),
     .ALUout(ALUout),
     .EQ(EQ)
+);
+
+data_mem#() data_mem_unit(
+    .clk(clk),
+    .funct3(instr[14:12]),
+    .WE(MemWrite),
+    .RD(ReadData),
+    .A(ALUout),
+    .WD(RD2)
+
+
+);
+
+mux4 result_mux(
+    .in0(ALUout),
+    .in1(ReadData),
+    .in2(PC + 32'd4),
+    .in3(32'b0),
+    .sel(ResultSrc),
+    .out(Result)
 );
     
 endmodule
