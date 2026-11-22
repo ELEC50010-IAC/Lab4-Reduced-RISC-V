@@ -1,0 +1,43 @@
+name: Diagram error / change request
+description: Report a mistake in, or request a change to, one of the project diagrams in docs/plan.
+title: "[Diagram] "
+labels: ["diagram"]
+assignees: ["OwaisD700"]
+body:
+  - type: dropdown
+    id: diagram
+    attributes:
+      label: Which diagram?
+      options:
+        - Architecture / roadmap (docs/plan/architecture.svg)
+        - Datapath (docs/plan/datapath.svg)
+        - Plan README (docs/plan/README.md)
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Is this an error or a change request?
+      options:
+        - Error (the diagram is wrong)
+        - Change request (the design or plan has changed)
+        - Unclear / question
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What is wrong or what should change?
+      description: Name the block or signal, e.g. "ALUsrc mux should also take PC for auipc".
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why / source
+      description: Optional. Link the RTL file, brief slide or textbook figure that supports the change.
+  - type: textarea
+    id: screenshot
+    attributes:
+      label: Screenshot or sketch
+      description: Optional. Drag an image in here.
