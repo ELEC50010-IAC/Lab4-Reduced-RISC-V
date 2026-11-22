@@ -1,6 +1,6 @@
 /*
- *  Verifies the register file: synchronous write, asynchronous reads,
- *  x0 hardwired to zero, and the a0 output.
+ *  Verifies the register file: synchronous write, asynchronous reads, all 31 writable registers,
+ *  read-before-write in the same cycle, x0 hardwired to zero and a0 showing only x10. 
  */
 
 #include "testbench.h"
@@ -105,6 +105,68 @@ TEST_F(RegfileTestbench, TwoReadPortsTest)
     EXPECT_EQ(top->RD1, 11);
     EXPECT_EQ(top->RD2, 10);
 }
+
+// registers x1 to x31 can be written and keep their own value
+TEST_F(RegfileTestbench, AllRegistersWritableTest)
+{
+    // 0xA5 in the top bits checks all 32 bits stored
+    top->WE3 = 1;
+    for(unsigned int i = 1; i < 32; i++)
+    {
+        top->A3 = i;
+        top->WD3 = 0xA5000000 + i;
+        runSimulation(1);
+    }
+
+    // read back only after all the writes so two registers sharing storage would show up
+    top->WE3 = 0;
+    for(unsigned int i = 1; i < 32; i++)
+    {
+        top->A1 = i;
+        top->eval();
+        EXPECT_EQ(top->RD1, 0xA5000000 + i) << "register " << i;
+    }
+
+    // x0 must still read 0
+    top->A1 = 0;
+    top->eval();
+    EXPECT_EQ(top->RD1, 0u);
+}
+
+// a read in the same cycle as a write sees old value until clock edge
+TEST_F(RegfileTestbench, WriteAndReadSameCycleTest)
+{
+    top->A3 = 5;
+    top->WD3 = 10;
+    top->WE3 = 1;
+    runSimulation(1);
+
+    // write of 20 set up but no clock edge, so x5 still reads 10
+    top->A1 = 5;
+    top->WD3 = 20;
+    top->eval();
+    EXPECT_EQ(top->RD1, 10u);
+
+    runSimulation(1);
+    EXPECT_EQ(top->RD1, 20u);
+}
+
+// a0 shows x10 and only x10
+TEST_F(RegfileTestbench, A0OnlyShowsX10Test)
+{
+    top->A3 = 10;
+    top->WD3 = 0x12345678;
+    top->WE3 = 1;
+    runSimulation(1);
+    EXPECT_EQ(top->a0, 0x12345678u);
+
+    // writing a different register must not change a0
+    top->A3 = 11;
+    top->WD3 = 0xFFFFFFFF;
+    runSimulation(1);
+    EXPECT_EQ(top->a0, 0x12345678u);
+}
+
 
 int main(int argc, char **argv)
 {
