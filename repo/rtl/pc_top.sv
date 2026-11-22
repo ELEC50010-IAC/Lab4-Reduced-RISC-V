@@ -29,7 +29,7 @@ always_ff @(posedge clk, posedge rst) begin
 end
 
 
-mux4PC_temp #(
+mux4 #(
     .DATA_WIDTH(WIDTH)
 ) PC_mux (
     .in0(PCPlus4),
