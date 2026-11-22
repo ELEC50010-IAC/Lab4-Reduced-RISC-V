@@ -4,20 +4,25 @@ module data_mem #(
 )( 
     input logic clk,
     input logic WE,
+    
+    /* verilator lint_off UNUSED */
     input logic [31:0] A,
+    /* verilator lint_on UNUSED */
+
     input logic [31:0] WD,
     input logic [2:0] funct3,
     output logic [31:0] RD
 );
-    logic [7:0] mem [2**ADDRESS_WIDTH-1:0]; // each element contains 8 bytes;
+    logic [7:0] mem [2**ADDRESS_WIDTH-1:0]; // each element contains a byte;
     logic [ADDRESS_WIDTH-1:0] a;
     assign a = A[ADDRESS_WIDTH-1:0];
 
 initial begin
     $display("Loading Data memory.");
-    $readmemh("../rtl/program.hex", mem);
+    $readmemh("../rtl/data.hex", mem); //TODO
 end
 
+    // misallgned access works because memory is a byte array
     always_comb begin
         case (funct3)
         3'b000: RD = {{24{mem[a][7]}}, mem[a]};
