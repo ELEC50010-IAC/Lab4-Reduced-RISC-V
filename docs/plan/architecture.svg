@@ -1,0 +1,200 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 840" width="1100" height="840" font-family="Helvetica, Arial, sans-serif">
+  <title>Team16 project architecture and timeline</title>
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#333"/>
+    </marker>
+    <style>
+      .w    { stroke:#333; stroke-width:1.8; fill:none; }
+      .up   { stroke:#555; stroke-width:2; fill:none; stroke-dasharray:7 4; }
+      .lbl  { font-size:12px; fill:#333; }
+      .sub  { font-size:11px; fill:#555; }
+      .h    { font-size:15px; font-weight:bold; fill:#111; }
+      .tag  { font-size:11.5px; font-weight:bold; fill:#333; }
+      .prog { fill:#eef1f5; stroke:#69788c; stroke-width:1.5; }
+      .ph   { fill:#f7f7f7; stroke:#888; stroke-width:1.5; }
+      .stg  { stroke-width:1.6; }
+      .A    { fill:#fde7cf; stroke:#c46f12; }
+      .B    { fill:#dcf2df; stroke:#2e8b47; }
+      .C    { fill:#dbe9fb; stroke:#2f6db5; }
+      .D    { fill:#efe3f8; stroke:#7a3fb0; }
+      .N    { fill:#ffffff; stroke:#555; }
+      .bt   { font-size:11px; font-weight:bold; fill:#fff; text-anchor:middle; }
+      .bar  { font-size:10.5px; fill:#111; }
+      .ms   { stroke:#b00020; stroke-width:1.4; stroke-dasharray:3 3; }
+      .mst  { font-size:10.5px; fill:#b00020; font-weight:bold; }
+      .mem  { stroke:#555; stroke-width:1.2; }
+    </style>
+  </defs>
+
+  <rect width="1100" height="840" fill="#ffffff"/>
+  <text x="20" y="30" style="font-size:19px;font-weight:bold;fill:#111">Team16 RISC-V project: what we build, who builds it, when</text>
+  <text x="20" y="49" class="sub">Letters A–D are work packages (owners negotiated). Dashed arrows = builds on. Today, Thu 19 Nov: Lab 4 CPU runs addi + bne only.</text>
+
+  <!-- ===== Programs ===== -->
+  <text x="20" y="92" class="h">Programs</text>
+  <rect x="20" y="104" width="190" height="52" rx="6" class="prog"/>
+  <text x="32" y="126" class="lbl" font-weight="bold">F1 starting lights</text>
+  <text x="32" y="143" class="sub">we write in RV32I asm</text>
+  <rect x="20" y="168" width="190" height="52" rx="6" class="prog"/>
+  <text x="32" y="190" class="lbl" font-weight="bold">pdf.s reference program</text>
+  <text x="32" y="207" class="sub">given; needs data file</text>
+  <rect x="20" y="232" width="190" height="52" rx="6" class="prog"/>
+  <text x="32" y="254" class="lbl" font-weight="bold">Test programs</text>
+  <text x="32" y="271" class="sub">per-instruction asm tests</text>
+  <circle cx="200" cy="104" r="10" fill="#2f6db5"/><text x="200" y="108" class="bt">C</text>
+  <circle cx="200" cy="168" r="10" fill="#2f6db5"/><text x="200" y="172" class="bt">C</text>
+  <circle cx="200" cy="232" r="10" fill="#2e8b47"/><text x="200" y="236" class="bt">B</text>
+  <text x="20" y="306" class="sub">compile.sh → program.hex →</text>
+  <text x="20" y="320" class="sub">instruction memory</text>
+  <path d="M210,194 L250,194" class="w" marker-end="url(#arr)"/>
+
+  <!-- ===== Phase 1: sprint ===== -->
+  <rect x="255" y="74" width="560" height="140" rx="8" class="ph"/>
+  <text x="270" y="97" class="h">Basic: single-cycle RV32I (sprint, all four)</text>
+  <text x="800" y="97" class="tag" text-anchor="end">19 → Wed 25 Nov</text>
+  <rect x="270" y="110" width="128" height="50" rx="4" class="stg A"/>
+  <text x="334" y="131" class="lbl" text-anchor="middle" font-weight="bold">A</text>
+  <text x="334" y="148" class="sub" text-anchor="middle">Control, Sign Extend</text>
+  <rect x="404" y="110" width="128" height="50" rx="4" class="stg B"/>
+  <text x="468" y="131" class="lbl" text-anchor="middle" font-weight="bold">B</text>
+  <text x="468" y="148" class="sub" text-anchor="middle">ALU, RegFile, test progs</text>
+  <rect x="538" y="110" width="128" height="50" rx="4" class="stg C"/>
+  <text x="602" y="131" class="lbl" text-anchor="middle" font-weight="bold">C</text>
+  <text x="602" y="148" class="sub" text-anchor="middle">PC, Instr Mem, programs</text>
+  <rect x="672" y="110" width="128" height="50" rx="4" class="stg D"/>
+  <text x="736" y="131" class="lbl" text-anchor="middle" font-weight="bold">D</text>
+  <text x="736" y="148" class="sub" text-anchor="middle">Data Mem, top.sv</text>
+  <text x="270" y="182" class="sub">Done when F1, pdf.s and all test programs pass. Detail: datapath.svg. Interfaces: interfaces.md.</text>
+  <text x="270" y="200" class="sub">Each package continues into the matching stretch work below.</text>
+
+  <!-- arrows to stretch -->
+  <path d="M400,214 L400,256" class="up" marker-end="url(#arr)"/>
+  <path d="M736,214 L736,256" class="up" marker-end="url(#arr)"/>
+
+  <!-- ===== Stretch row: pipeline + cache in parallel ===== -->
+  <rect x="255" y="260" width="380" height="156" rx="8" class="ph"/>
+  <text x="270" y="283" class="h">Stretch 1: pipelined RV32I</text>
+  <text x="620" y="283" class="tag" text-anchor="end">25 Nov → 4 Dec</text>
+  <g>
+    <rect x="270" y="296" width="52" height="38" rx="4" class="stg N"/><text x="296" y="320" class="lbl" text-anchor="middle" font-weight="bold">IF</text>
+    <rect x="325" y="296" width="5" height="38" fill="#2e8b47"/>
+    <rect x="333" y="296" width="52" height="38" rx="4" class="stg N"/><text x="359" y="320" class="lbl" text-anchor="middle" font-weight="bold">ID</text>
+    <rect x="388" y="296" width="5" height="38" fill="#2e8b47"/>
+    <rect x="396" y="296" width="52" height="38" rx="4" class="stg N"/><text x="422" y="320" class="lbl" text-anchor="middle" font-weight="bold">EX</text>
+    <rect x="451" y="296" width="5" height="38" fill="#2e8b47"/>
+    <rect x="459" y="296" width="52" height="38" rx="4" class="stg N"/><text x="485" y="320" class="lbl" text-anchor="middle" font-weight="bold">MEM</text>
+    <rect x="514" y="296" width="5" height="38" fill="#2e8b47"/>
+    <rect x="522" y="296" width="52" height="38" rx="4" class="stg N"/><text x="548" y="320" class="lbl" text-anchor="middle" font-weight="bold">WB</text>
+  </g>
+  <rect x="270" y="344" width="146" height="40" rx="4" class="stg B"/>
+  <text x="343" y="361" class="lbl" text-anchor="middle" font-weight="bold">B · pipeline datapath</text>
+  <text x="343" y="376" class="sub" text-anchor="middle">stage registers (green bars)</text>
+  <rect x="424" y="344" width="196" height="40" rx="4" class="stg A"/>
+  <text x="522" y="361" class="lbl" text-anchor="middle" font-weight="bold">A · hazard unit + control</text>
+  <text x="522" y="376" class="sub" text-anchor="middle">forwarding · stall · flush</text>
+  <text x="270" y="404" class="sub">Same programs must still pass.</text>
+
+  <rect x="650" y="260" width="165" height="156" rx="8" class="ph"/>
+  <text x="664" y="283" class="h">Stretch 2: cache</text>
+  <text x="664" y="300" class="tag">25 Nov → 4 Dec</text>
+  <rect x="664" y="312" width="137" height="44" rx="4" class="stg D"/>
+  <text x="732" y="331" class="lbl" text-anchor="middle" font-weight="bold">D · data cache</text>
+  <text x="732" y="347" class="sub" text-anchor="middle">set-associative</text>
+  <text x="664" y="376" class="sub">Built and tested on its</text>
+  <text x="664" y="390" class="sub">own, then attached to</text>
+  <text x="664" y="404" class="sub">the pipeline's MEM stage.</text>
+  <path d="M650,334 L622,334" class="w" marker-end="url(#arr)"/>
+
+  <!-- ===== Stretch 3 ===== -->
+  <rect x="255" y="432" width="560" height="70" rx="8" class="ph" stroke-dasharray="6 4"/>
+  <text x="270" y="456" class="h">Stretch 3: own ideas + one audacious feature</text>
+  <text x="800" y="456" class="tag" text-anchor="end">audacious feature by Tue 8 Dec</text>
+  <rect x="270" y="466" width="290" height="26" rx="4" class="stg C"/>
+  <text x="415" y="484" class="lbl" text-anchor="middle"><tspan font-weight="bold">C</tspan> · role decided at the 25 Nov split</text>
+  <text x="572" y="484" class="sub">feature to be chosen by the team</text>
+
+  <!-- ===== Memory map ===== -->
+  <text x="850" y="92" class="h">Memory map</text>
+  <g font-size="10.5" fill="#333">
+    <rect x="850" y="104" width="130" height="64" fill="#f2f2f2" class="mem"/>
+    <text x="915" y="140" text-anchor="middle" class="lbl">Unused</text>
+    <rect x="850" y="168" width="130" height="58" fill="#dbe9fb" class="mem"/>
+    <text x="915" y="194" text-anchor="middle" class="lbl" font-weight="bold">Instruction</text>
+    <text x="915" y="209" text-anchor="middle" class="lbl" font-weight="bold">memory (C)</text>
+    <rect x="850" y="226" width="130" height="44" fill="#f2f2f2" class="mem"/>
+    <text x="915" y="252" text-anchor="middle" class="lbl">Unused</text>
+    <rect x="850" y="270" width="130" height="70" fill="#efe3f8" class="mem"/>
+    <text x="915" y="302" text-anchor="middle" class="lbl" font-weight="bold">Data</text>
+    <text x="915" y="317" text-anchor="middle" class="lbl" font-weight="bold">memory (D)</text>
+    <rect x="850" y="340" width="130" height="36" fill="#e6e6e6" class="mem"/>
+    <text x="915" y="362" text-anchor="middle" class="lbl">Reserved</text>
+    <text x="986" y="108">0xFFFFFFFF</text>
+    <text x="986" y="172">0xBFC00FFF</text>
+    <text x="986" y="226">0xBFC00000</text>
+    <text x="986" y="274">0x0001FFFF</text>
+    <text x="986" y="340">0x00001000</text>
+    <text x="986" y="352">0x00000FFF</text>
+    <text x="986" y="377">0x00000000</text>
+  </g>
+  <text x="850" y="398" class="sub">From the project brief (slide 3).</text>
+
+  <!-- ===== Timeline ===== -->
+  <!-- x(day) = 255 + 37.5*day, day 0 = Thu 19 Nov, day 22 = Fri 11 Dec -->
+  <text x="20" y="540" class="h">Timeline</text>
+  <line x1="255" y1="560" x2="1080" y2="560" stroke="#999"/>
+  <g class="sub" text-anchor="middle">
+    <text x="255" y="554">Thu 19</text>
+    <text x="405" y="554">Mon 23</text>
+    <text x="480" y="554">Wed 25</text>
+    <text x="817" y="554">Fri 4 Dec</text>
+    <text x="967" y="554">Tue 8</text>
+    <text x="1062" y="554">Fri 11</text>
+  </g>
+  <!-- milestone lines -->
+  <line x1="255" y1="560" x2="255" y2="740" class="ms"/>
+  <line x1="405" y1="560" x2="405" y2="740" class="ms"/>
+  <line x1="442" y1="560" x2="442" y2="740" class="ms"/>
+  <line x1="480" y1="560" x2="480" y2="740" class="ms"/>
+  <line x1="817" y1="560" x2="817" y2="740" class="ms"/>
+  <line x1="967" y1="560" x2="967" y2="740" class="ms"/>
+  <line x1="1080" y1="560" x2="1080" y2="740" class="ms"/>
+
+  <!-- lanes -->
+  <g>
+    <circle cx="232" cy="582" r="10" fill="#c46f12"/><text x="232" y="586" class="bt">A</text>
+    <rect x="255" y="572" width="225" height="20" rx="3" class="stg A"/><text x="262" y="586" class="bar">Control + Sign Extend</text>
+    <rect x="480" y="572" width="337" height="20" rx="3" class="stg A"/><text x="487" y="586" class="bar">Hazard unit + pipeline control</text>
+
+    <circle cx="232" cy="608" r="10" fill="#2e8b47"/><text x="232" y="612" class="bt">B</text>
+    <rect x="255" y="598" width="225" height="20" rx="3" class="stg B"/><text x="262" y="612" class="bar">ALU + RegFile + test programs</text>
+    <rect x="480" y="598" width="337" height="20" rx="3" class="stg B"/><text x="487" y="612" class="bar">Pipeline datapath</text>
+
+    <circle cx="232" cy="634" r="10" fill="#2f6db5"/><text x="232" y="638" class="bt">C</text>
+    <rect x="255" y="624" width="225" height="20" rx="3" class="stg C"/><text x="262" y="638" class="bar">PC + IMem + F1 / pdf.s</text>
+    <rect x="480" y="624" width="337" height="20" rx="3" class="stg C" stroke-dasharray="5 3"/><text x="487" y="638" class="bar">Stretch role (decided 25 Nov)</text>
+
+    <circle cx="232" cy="660" r="10" fill="#7a3fb0"/><text x="232" y="664" class="bt">D</text>
+    <rect x="255" y="650" width="225" height="20" rx="3" class="stg D"/><text x="262" y="664" class="bar">Data Mem + integrate as you go</text>
+    <rect x="480" y="650" width="337" height="20" rx="3" class="stg D"/><text x="487" y="664" class="bar">Data cache</text>
+
+    <text x="245" y="690" class="sub" text-anchor="end">Team</text>
+    <rect x="817" y="676" width="150" height="20" rx="3" fill="#fff3c4" stroke="#b08900" stroke-width="1.6"/><text x="824" y="690" class="bar">Audacious feature</text>
+    <rect x="817" y="702" width="263" height="20" rx="3" fill="#eeeeee" stroke="#777" stroke-width="1.6"/><text x="824" y="716" class="bar">README (1 person) · statements · AI decl.</text>
+  </g>
+  <!-- milestone labels -->
+  <g class="mst">
+    <text x="258" y="754">interfaces</text>
+    <text x="405" y="768" text-anchor="middle">hand-off</text>
+    <text x="442" y="754" text-anchor="middle">programs run</text>
+    <text x="490" y="768">sprint done</text>
+    <text x="817" y="754" text-anchor="middle">feature freeze</text>
+    <text x="967" y="768" text-anchor="middle">audacious done</text>
+    <text x="1078" y="754" text-anchor="end">submit 23:59</text>
+  </g>
+
+  <!-- ===== Verification ===== -->
+  <rect x="20" y="784" width="1060" height="44" rx="8" fill="#f3f3f3" stroke="#888" stroke-width="1.5"/>
+  <text x="34" y="803" class="h">Verification</text>
+  <text x="34" y="820" class="sub">Cross-checking: A tests D → D tests C → C tests B → B tests A · test programs (B) · verify.cpp (D) · build script (C) · every phase must still pass F1, pdf.s and the test programs</text>
+</svg>
