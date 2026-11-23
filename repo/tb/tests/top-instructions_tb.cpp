@@ -97,6 +97,87 @@ TEST_F(CpuTestbench, SltuTest)
     EXPECT_EQ(top_->a0, 1u);
 }
 
+// addi: 10 + (-3) = 7, negative imm sets bit 30 so this also catches addi done as sub
+TEST_F(CpuTestbench, AddiTest)
+{
+    setupTest("addi");
+    initSimulation();
+    runSimulation(CYCLES);
+    EXPECT_EQ(top_->a0, 7u);
+}
+
+// andi: -100 & -16 = 0xFFFFFF90, imm must be sign-extended
+TEST_F(CpuTestbench, AndiTest)
+{
+    setupTest("andi");
+    initSimulation();
+    runSimulation(CYCLES);
+    EXPECT_EQ(top_->a0, 0xFFFFFF90u);
+}
+
+// ori: 10 | 12 = 14
+TEST_F(CpuTestbench, OriTest)
+{
+    setupTest("ori");
+    initSimulation();
+    runSimulation(CYCLES);
+    EXPECT_EQ(top_->a0, 14u);
+}
+
+// xori: 10 ^ -1 = 0xFFFFFFF5, flips every bit
+TEST_F(CpuTestbench, XoriTest)
+{
+    setupTest("xori");
+    initSimulation();
+    runSimulation(CYCLES);
+    EXPECT_EQ(top_->a0, 0xFFFFFFF5u);
+}
+
+// slli: 3 << 4 = 48
+TEST_F(CpuTestbench, SlliTest)
+{
+    setupTest("slli");
+    initSimulation();
+    runSimulation(CYCLES);
+    EXPECT_EQ(top_->a0, 48u);
+}
+
+// srli: -64 >> 2 = 0x3FFFFFF0, top filled with 0s
+TEST_F(CpuTestbench, SrliTest)
+{
+    setupTest("srli");
+    initSimulation();
+    runSimulation(CYCLES);
+    EXPECT_EQ(top_->a0, 0x3FFFFFF0u);
+}
+
+// srai: -64 >>> 2 = -16 (0xFFFFFFF0), sign kept
+TEST_F(CpuTestbench, SraiTest)
+{
+    setupTest("srai");
+    initSimulation();
+    runSimulation(CYCLES);
+    EXPECT_EQ(top_->a0, 0xFFFFFFF0u);
+}
+
+// slti: signed, -1 < 1 = 1
+TEST_F(CpuTestbench, SltiTest)
+{
+    setupTest("slti");
+    initSimulation();
+    runSimulation(CYCLES);
+    EXPECT_EQ(top_->a0, 1u);
+}
+
+// sltiu: unsigned, -1 is 0xFFFFFFFF (the largest number) so 1 < 0xFFFFFFFF = 1
+TEST_F(CpuTestbench, SltiuTest)
+{
+    setupTest("sltiu");
+    initSimulation();
+    runSimulation(CYCLES);
+    EXPECT_EQ(top_->a0, 1u);
+}
+
 int main(int argc, char **argv)
 {
     testing::InitGoogleTest(&argc, argv);
