@@ -12,7 +12,7 @@ logic [7:0] rom_array [2**ADDRESS_WIDTH-1:0];
 
 initial begin
     $display("Loading instruction memory.");
-    $readmemh("../rtl/program.hex", rom_array);
+    $readmemh("program.hex", rom_array);
 end
 
 
