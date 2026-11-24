@@ -35,6 +35,12 @@ assign rs1 = instr[19:15];
 assign rs2 = instr[24:20];
 assign rd = instr[11:7];
 
+// Unused Wires
+/* verilator lint_off UNUSED */
+logic [31:0] PCTarget_unused;
+logic Zero_unused;
+/* verilator lint_on UNUSED */
+
 pc_top #(.WIDTH(32)) pc_reg(
     .clk(clk),
     .rst(rst),
@@ -42,7 +48,8 @@ pc_top #(.WIDTH(32)) pc_reg(
     .ImmExt(ImmExt),
     .PC(PC),
     .PCPlus4(PCPlus4),
-    .ALUResult(ALUResult)
+    .ALUResult(ALUResult),
+    .PCTarget(PCTarget_unused)
 );
 
 instr_mem #() imem(
@@ -94,7 +101,8 @@ alu #(.DATA_WIDTH(32)) alu_unit(
     .SrcA(SrcA),
     .SrcB(SrcB),
     .ALUControl(ALUControl),
-    .ALUResult(ALUResult)
+    .ALUResult(ALUResult),
+    .Zero(Zero_unused)
 );
     
 
