@@ -36,7 +36,7 @@ assign rs1 = instr[19:15];
 assign rs2 = instr[24:20];
 assign rd = instr[11:7];
 
-pc_top #(.WIDTH(32)) pc(
+pc_top #(.WIDTH(32)) pc_reg(
     .clk(clk),
     .rst(rst),
     .PCSrc({1'b0, PCsrc}),   // TEMP until A's 2-bit PCSrc),
@@ -59,7 +59,9 @@ control_unit control(
     .ImmSrc(ImmSrc),
     .PCSrc(PCsrc),
     .EQ(EQ),
-    .op(instr[6:0]) // op
+    .op(instr[6:0]), // op
+    .funct3(instr[14:12]),
+    .funct7(instr[30])
 );
 
 sign_ext signext(
@@ -69,9 +71,9 @@ sign_ext signext(
 );
 
 regfile #(.DATA_WIDTH(32), .ADDR_WIDTH(5)) rf(
-    .AD1(rs1),
-    .AD2(rs2),
-    .AD3(rd),
+    .A1(rs1),
+    .A2(rs2),
+    .A3(rd),
     .WD3(Result),
     .WE3(RegWrite),
     .clk(clk),
@@ -88,11 +90,11 @@ mux #(.DATA_WIDTH(32)) alu_src_mux(
 );
 
 alu #(.DATA_WIDTH(32)) alu_unit(
-    .ALUop1(RD1),
-    .ALUop2(regOp2),
-    .ALUctrl(ALUctrl),
-    .ALUout(ALUout),
-    .EQ(EQ)
+    .SrcA(RD1),
+    .SrcB(regOp2),
+    .ALUControl({1'b0, ALUctrl}),
+    .ALUResult(ALUout),
+    .Zero(EQ)
 );
 
 data_mem#() data_mem_unit(
