@@ -250,6 +250,60 @@ TEST_F(CpuTestbench, OffsetTest)
     EXPECT_EQ(top_->a0, 90u);
 }
 
+// beq: 5 == 6 must not jump, 5 == 5 must jump, a0 = 1 only on the right path
+TEST_F(CpuTestbench, BeqTest)
+{
+    setupTest("beq");
+    initSimulation();
+    runSimulation(CYCLES);
+    EXPECT_EQ(top_->a0, 1u);
+}
+
+// bne: 5 != 5 must not jump, 5 != 6 must jump, a0 = 1 only on the right path
+TEST_F(CpuTestbench, BneTest)
+{
+    setupTest("bne");
+    initSimulation();
+    runSimulation(CYCLES);
+    EXPECT_EQ(top_->a0, 1u);
+}
+
+// blt: signed: 1 < -1 must not jump, -1 < 1 must jump
+TEST_F(CpuTestbench, BltTest)
+{
+    setupTest("blt");
+    initSimulation();
+    runSimulation(CYCLES);
+    EXPECT_EQ(top_->a0, 1u);
+}
+
+// bge: signed: -1 >= 1 must not jump, 1 >= -1 must jump
+TEST_F(CpuTestbench, BgeTest)
+{
+    setupTest("bge");
+    initSimulation();
+    runSimulation(CYCLES);
+    EXPECT_EQ(top_->a0, 1u);
+}
+
+// bltu: unsigned: 0xFFFFFFFF < 1 must not jump, 1 < 0xFFFFFFFF must jump
+TEST_F(CpuTestbench, BltuTest)
+{
+    setupTest("bltu");
+    initSimulation();
+    runSimulation(CYCLES);
+    EXPECT_EQ(top_->a0, 1u);
+}
+
+// bgeu: unsigned: 1 >= 0xFFFFFFFF must not jump, 0xFFFFFFFF >= 1 must jump
+TEST_F(CpuTestbench, BgeuTest)
+{
+    setupTest("bgeu");
+    initSimulation();
+    runSimulation(CYCLES);
+    EXPECT_EQ(top_->a0, 1u);
+}
+
 int main(int argc, char **argv)
 {
     testing::InitGoogleTest(&argc, argv);
