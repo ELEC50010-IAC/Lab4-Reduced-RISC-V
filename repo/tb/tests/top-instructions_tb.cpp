@@ -178,6 +178,78 @@ TEST_F(CpuTestbench, SltiuTest)
     EXPECT_EQ(top_->a0, 1u);
 }
 
+// lw: store 0x12345678 then load it back, all 4 bytes different so byte order shows
+TEST_F(CpuTestbench, LwTest)
+{
+    setupTest("lw");
+    initSimulation();
+    runSimulation(CYCLES);
+    EXPECT_EQ(top_->a0, 0x12345678u);
+}
+
+// lb: byte 0x80 sign-extended = 0xFFFFFF80
+TEST_F(CpuTestbench, LbTest)
+{
+    setupTest("lb");
+    initSimulation();
+    runSimulation(CYCLES);
+    EXPECT_EQ(top_->a0, 0xFFFFFF80u);
+}
+
+// lbu: same byte 0x80 zero-extended = 0x80
+TEST_F(CpuTestbench, LbuTest)
+{
+    setupTest("lbu");
+    initSimulation();
+    runSimulation(CYCLES);
+    EXPECT_EQ(top_->a0, 0x80u);
+}
+
+// lh: half 0xFFFE sign-extended = 0xFFFFFFFE
+TEST_F(CpuTestbench, LhTest)
+{
+    setupTest("lh");
+    initSimulation();
+    runSimulation(CYCLES);
+    EXPECT_EQ(top_->a0, 0xFFFFFFFEu);
+}
+
+// lhu: same half 0xFFFE zero-extended = 0xFFFE
+TEST_F(CpuTestbench, LhuTest)
+{
+    setupTest("lhu");
+    initSimulation();
+    runSimulation(CYCLES);
+    EXPECT_EQ(top_->a0, 0xFFFEu);
+}
+
+// sb: only the lowest byte of 0x12345678 changes = 0x123456FF
+TEST_F(CpuTestbench, SbTest)
+{
+    setupTest("sb");
+    initSimulation();
+    runSimulation(CYCLES);
+    EXPECT_EQ(top_->a0, 0x123456FFu);
+}
+
+// sh: only the lowest 2 bytes of 0x12345678 change = 0x1234FFFF
+TEST_F(CpuTestbench, ShTest)
+{
+    setupTest("sh");
+    initSimulation();
+    runSimulation(CYCLES);
+    EXPECT_EQ(top_->a0, 0x1234FFFFu);
+}
+
+// offset: sw -4(0x108) and lw 4(0x100) both use 0x104 = 90
+TEST_F(CpuTestbench, OffsetTest)
+{
+    setupTest("offset");
+    initSimulation();
+    runSimulation(CYCLES);
+    EXPECT_EQ(top_->a0, 90u);
+}
+
 int main(int argc, char **argv)
 {
     testing::InitGoogleTest(&argc, argv);
