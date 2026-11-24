@@ -1,5 +1,7 @@
 # Team16 project plan
 
+> **Phase 1 (single-cycle RV32I) is complete. The current plan is [Phase 2: pipeline, cache, branch prediction](phase2/README.md).** The rest of this page is the Phase 1 plan, kept for reference.
+
 **Deadlines:** team feature freeze **Fri 4 Dec** · audacious feature **Tue 8 Dec** · submission **Fri 11 Dec, 23:59**
 
 Live task board: *link to be added*

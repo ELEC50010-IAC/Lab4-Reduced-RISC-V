@@ -1,0 +1,221 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 800" width="1280" height="800" font-family="Helvetica, Arial, sans-serif">
+  <title>Package A · Hazard unit and pipeline control</title>
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#333"/>
+    </marker>
+    <style>
+      .w   { stroke:#333; stroke-width:1.6; fill:none; }
+      .wt  { stroke:#333; stroke-width:1.1; fill:none; }
+      .bus { stroke:#666; stroke-width:3; fill:none; }
+      .fwd { stroke:#2e8b47; stroke-width:1.8; fill:none; stroke-dasharray:6 3; }
+      .hz  { stroke:#c46f12; stroke-width:1.6; fill:none; stroke-dasharray:3 3; }
+      .mem { stroke:#7a3fb0; stroke-width:1.8; fill:none; }
+      .lbl { font-size:11px; fill:#333; }
+      .lblb{ font-size:11px; fill:#333; font-weight:bold; }
+      .sig { font-size:10.5px; fill:#1f5fbf; font-style:italic; }
+      .ttl { font-size:14px; font-weight:bold; fill:#111; }
+      .ttl2{ font-size:12.5px; font-weight:bold; fill:#111; }
+      .sub { font-size:10.5px; fill:#555; }
+      .mono{ font-size:10.5px; fill:#222; font-family:DejaVu Sans Mono, Consolas, monospace; }
+      .A   { fill:#fde7cf; stroke:#c46f12; stroke-width:2.2; }
+      .B   { fill:#dcf2df; stroke:#2e8b47; stroke-width:2.2; }
+      .C   { fill:#dbe9fb; stroke:#2f6db5; stroke-width:2.2; }
+      .D   { fill:#efe3f8; stroke:#7a3fb0; stroke-width:2.2; }
+      .G   { fill:#eeeeee; stroke:#888; stroke-width:1.8; }
+      .new { stroke-dasharray:6 4; }
+      .band{ fill:#f6f8fb; stroke:none; }
+      .bt  { font-size:13px; font-weight:bold; fill:#fff; text-anchor:middle; }
+    </style>
+  </defs>
+  <rect width="1280" height="800" fill="#ffffff"/>
+  <text x="56" y="28" style="font-size:18px;font-weight:bold;fill:#111">Package A · Hazard unit and pipeline control</text>
+  <text x="56" y="46" class="sub">Pipeline pair (A + B) · A's work is tested by C · A writes the tests for D (cache)</text>
+  <circle cx="32" cy="30" r="15" fill="#c46f12"/>
+  <text x="32" y="35" class="bt">A</text>
+  <text x="20" y="78" class="ttl2">control_unit.sv: what changes</text>
+  <rect x="250" y="90" width="230" height="192" rx="4" class="A"/>
+  <text x="365.0" y="116" class="ttl" text-anchor="middle">control_unit</text>
+  <text x="365.0" y="130" class="sub" text-anchor="middle">decodes op, funct3, funct7b5</text>
+  <path d="M140,136 L250,136" class="w" marker-end="url(#arr)"/>
+  <text x="134" y="140" class="lbl" text-anchor="end">op [6:0]</text>
+  <path d="M140,166 L250,166" class="w" marker-end="url(#arr)"/>
+  <text x="134" y="170" class="lbl" text-anchor="end">funct3 [2:0]</text>
+  <path d="M140,196 L250,196" class="w" marker-end="url(#arr)"/>
+  <text x="134" y="200" class="lbl" text-anchor="end">funct7b5</text>
+  <path d="M140,250 L250,250" class="wt"/>
+  <text x="134" y="254" class="lbl" text-anchor="end" style="fill:#888;text-decoration:line-through">BranchTaken</text>
+  <rect x="170" y="244" width="51" height="14" rx="7" fill="#999"/>
+  <text x="196" y="254" text-anchor="middle" style="font-size:9.5px;font-weight:bold;fill:#fff">removed</text>
+  <path d="M480,104 L505,104" class="w" marker-end="url(#arr)"/>
+  <text x="510" y="108" class="lbl">RegWrite</text>
+  <path d="M480,119 L505,119" class="w" marker-end="url(#arr)"/>
+  <text x="510" y="123" class="lbl">ALUSrc</text>
+  <path d="M480,134 L505,134" class="w" marker-end="url(#arr)"/>
+  <text x="510" y="138" class="lbl">ALUSrcA</text>
+  <path d="M480,149 L505,149" class="w" marker-end="url(#arr)"/>
+  <text x="510" y="153" class="lbl">ImmSrc [3]</text>
+  <path d="M480,164 L505,164" class="w" marker-end="url(#arr)"/>
+  <text x="510" y="168" class="lbl">MemWrite</text>
+  <path d="M480,179 L505,179" class="w" marker-end="url(#arr)"/>
+  <text x="510" y="183" class="lbl">ResultSrc [2]</text>
+  <path d="M480,194 L505,194" class="w" marker-end="url(#arr)"/>
+  <text x="510" y="198" class="lbl">ALUControl [4]</text>
+  <path d="M480,209 L505,209" class="w" marker-end="url(#arr)"/>
+  <text x="510" y="213" class="lblb">MemRead</text>
+  <rect x="590" y="203" width="27" height="14" rx="7" fill="#2e8b47"/>
+  <text x="603" y="213" text-anchor="middle" style="font-size:9.5px;font-weight:bold;fill:#fff">new</text>
+  <path d="M480,224 L505,224" class="w" marker-end="url(#arr)"/>
+  <text x="510" y="228" class="lblb">Branch</text>
+  <rect x="590" y="218" width="27" height="14" rx="7" fill="#2e8b47"/>
+  <text x="603" y="228" text-anchor="middle" style="font-size:9.5px;font-weight:bold;fill:#fff">new</text>
+  <path d="M480,239 L505,239" class="w" marker-end="url(#arr)"/>
+  <text x="510" y="243" class="lblb">Jump</text>
+  <rect x="590" y="233" width="27" height="14" rx="7" fill="#2e8b47"/>
+  <text x="603" y="243" text-anchor="middle" style="font-size:9.5px;font-weight:bold;fill:#fff">new</text>
+  <path d="M480,254 L505,254" class="w" marker-end="url(#arr)"/>
+  <text x="510" y="258" class="lblb">Jalr</text>
+  <rect x="590" y="248" width="27" height="14" rx="7" fill="#2e8b47"/>
+  <text x="603" y="258" text-anchor="middle" style="font-size:9.5px;font-weight:bold;fill:#fff">new</text>
+  <path d="M480,269 L505,269" class="wt"/>
+  <text x="510" y="273" class="lbl" style="fill:#888;text-decoration:line-through">PCSrc</text>
+  <rect x="580" y="263" width="76" height="14" rx="7" fill="#999"/>
+  <text x="618" y="273" text-anchor="middle" style="font-size:9.5px;font-weight:bold;fill:#fff">removed out</text>
+  <text x="660" y="150" class="sub">MemRead tells the cache a read is real.</text>
+  <text x="660" y="164" class="sub">Branch / Jump / Jalr feed the redirect</text>
+  <text x="660" y="178" class="sub">logic in EX (the branch is decided there,</text>
+  <text x="660" y="192" class="sub">so PCSrc and BranchTaken go away).</text>
+  <text x="20" y="312" class="ttl2">hazard_unit.sv: new</text>
+  <rect x="200" y="322" width="400" height="276" rx="4" class="A new"/>
+  <text x="400" y="340" class="ttl" text-anchor="middle">hazard_unit</text>
+  <rect x="210" y="350" width="380" height="52" rx="4" fill="#fff" stroke="#c46f12" stroke-width="1.2"/>
+  <text x="218" y="365" class="ttl2">1  Forward</text>
+  <text x="218" y="380" class="mono">RegWriteM &amp; RdM!=0 &amp; RdM==Rs1E =&gt; ForwardAE=10</text>
+  <text x="218" y="394" class="mono">else RegWriteW &amp; RdW!=0 &amp; RdW==Rs1E =&gt; 01</text>
+  <rect x="210" y="408" width="380" height="52" rx="4" fill="#fff" stroke="#c46f12" stroke-width="1.2"/>
+  <text x="218" y="423" class="ttl2">2  Load-use stall</text>
+  <text x="218" y="438" class="mono">MemReadE &amp; RdE!=0 &amp; (RdE==Rs1D | RdE==Rs2D)</text>
+  <text x="218" y="452" class="mono">=&gt; StallF, StallD, FlushE   (one bubble)</text>
+  <rect x="210" y="466" width="380" height="52" rx="4" fill="#fff" stroke="#c46f12" stroke-width="1.2"/>
+  <text x="218" y="481" class="ttl2">3  Mispredict</text>
+  <text x="218" y="496" class="mono">MispredictE =&gt; FlushD, FlushE</text>
+  <text x="218" y="510" class="mono">the PC redirect itself is done by the logic below</text>
+  <rect x="210" y="524" width="380" height="52" rx="4" fill="#fff" stroke="#c46f12" stroke-width="1.2"/>
+  <text x="218" y="539" class="ttl2">4  Memory stall</text>
+  <text x="218" y="554" class="mono">MemBusyM =&gt; StallF, StallD, StallE, StallM, FlushW</text>
+  <text x="218" y="568" class="mono">no flush takes effect while MemBusyM is high</text>
+  <text x="400" y="590" class="lblb" text-anchor="middle">Priority: MemBusyM  >  MispredictE  >  load-use</text>
+  <rect x="20" y="340" width="32" height="18" rx="9" fill="#2e8b47"/>
+  <text x="36" y="353" class="bt" style="font-size:10px">D</text>
+  <text x="60" y="354" class="lbl">Rs1D, Rs2D</text>
+  <path d="M168,349 L200,349" class="w" marker-end="url(#arr)"/>
+  <rect x="20" y="374" width="32" height="18" rx="9" fill="#2e8b47"/>
+  <text x="36" y="387" class="bt" style="font-size:10px">E</text>
+  <text x="60" y="388" class="lbl">Rs1E, Rs2E, RdE</text>
+  <path d="M168,383 L200,383" class="w" marker-end="url(#arr)"/>
+  <rect x="20" y="408" width="32" height="18" rx="9" fill="#2e8b47"/>
+  <text x="36" y="421" class="bt" style="font-size:10px">E</text>
+  <text x="60" y="422" class="lbl">MemReadE</text>
+  <path d="M168,417 L200,417" class="w" marker-end="url(#arr)"/>
+  <rect x="20" y="442" width="32" height="18" rx="9" fill="#2e8b47"/>
+  <text x="36" y="455" class="bt" style="font-size:10px">M</text>
+  <text x="60" y="456" class="lbl">RdM, RegWriteM</text>
+  <path d="M168,451 L200,451" class="w" marker-end="url(#arr)"/>
+  <rect x="20" y="476" width="32" height="18" rx="9" fill="#2e8b47"/>
+  <text x="36" y="489" class="bt" style="font-size:10px">W</text>
+  <text x="60" y="490" class="lbl">RdW, RegWriteW</text>
+  <path d="M168,485 L200,485" class="w" marker-end="url(#arr)"/>
+  <rect x="20" y="510" width="32" height="18" rx="9" fill="#2e8b47"/>
+  <text x="36" y="523" class="bt" style="font-size:10px">EX</text>
+  <text x="60" y="524" class="lbl">MispredictE</text>
+  <path d="M190,519 L200,519" class="w" marker-end="url(#arr)"/>
+  <rect x="20" y="544" width="32" height="18" rx="9" fill="#2e8b47"/>
+  <text x="36" y="557" class="bt" style="font-size:10px">MEM</text>
+  <text x="60" y="558" class="lbl">MemBusyM</text>
+  <path d="M190,553 L200,553" class="w" marker-end="url(#arr)"/>
+  <path d="M600,347 L625,347" class="w" marker-end="url(#arr)"/>
+  <text x="632" y="350" class="sig">ForwardAE, ForwardBE [2 each]</text>
+  <text x="632" y="364" class="sub">→ forward muxes in EX (B)</text>
+  <path d="M600,387 L625,387" class="w" marker-end="url(#arr)"/>
+  <text x="632" y="390" class="sig">StallF</text>
+  <text x="632" y="404" class="sub">→ PC enable</text>
+  <path d="M600,427 L625,427" class="w" marker-end="url(#arr)"/>
+  <text x="632" y="430" class="sig">StallD, FlushD</text>
+  <text x="632" y="444" class="sub">→ IF/ID</text>
+  <path d="M600,467 L625,467" class="w" marker-end="url(#arr)"/>
+  <text x="632" y="470" class="sig">StallE, FlushE</text>
+  <text x="632" y="484" class="sub">→ ID/EX</text>
+  <path d="M600,507 L625,507" class="w" marker-end="url(#arr)"/>
+  <text x="632" y="510" class="sig">StallM</text>
+  <text x="632" y="524" class="sub">→ EX/MEM</text>
+  <path d="M600,547 L625,547" class="w" marker-end="url(#arr)"/>
+  <text x="632" y="550" class="sig">FlushW</text>
+  <text x="632" y="564" class="sub">→ MEM/WB</text>
+  <text x="20" y="626" class="ttl2">Mispredict + redirect logic (in EX)</text>
+  <text x="20" y="648" class="mono">TakenE       = JumpE | JalrE | (BranchE &amp; BranchTakenE)</text>
+  <text x="20" y="664" class="mono">TargetE      = JalrE ? {ALUResultE[31:1], 1'b0} : PCTargetE      (PCTargetE = PCE + ImmExtE: B's adder)</text>
+  <text x="20" y="680" class="mono">MispredictE  = (TakenE != PredTakenE) | (TakenE &amp; PredTakenE &amp; TargetE != PredTargetE)</text>
+  <text x="20" y="696" class="mono">RedirectPCE  = TakenE ? TargetE : PCPlus4E</text>
+  <text x="20" y="724" class="lblb">Next PC in IF, highest priority first (the mux lives in pc_top, C):</text>
+  <text x="20" y="742" class="mono">1  MispredictE =&gt; RedirectPCE      2  PredTakenF =&gt; PredTargetF      3  otherwise =&gt; PCPlus4F</text>
+  <text x="20" y="764" class="sub">A predicted-taken instruction that is not a taken jump or branch (table collision) is a mispredict and goes to PCPlus4E.</text>
+  <text x="910" y="76" class="lblb">Where it sits</text>
+  <rect x="910" y="84" width="40" height="52" rx="3" fill="#f1f3f6" stroke="#c9ced6"/>
+  <text x="930" y="147" class="sub" text-anchor="middle">IF</text>
+  <rect x="956" y="84" width="40" height="52" rx="3" fill="#f1f3f6" stroke="#c9ced6"/>
+  <text x="976" y="147" class="sub" text-anchor="middle">ID</text>
+  <rect x="1002" y="84" width="40" height="52" rx="3" fill="#f1f3f6" stroke="#c9ced6"/>
+  <text x="1022" y="147" class="sub" text-anchor="middle">EX</text>
+  <rect x="1048" y="84" width="40" height="52" rx="3" fill="#f1f3f6" stroke="#c9ced6"/>
+  <text x="1068" y="147" class="sub" text-anchor="middle">MEM</text>
+  <rect x="1094" y="84" width="40" height="52" rx="3" fill="#f1f3f6" stroke="#c9ced6"/>
+  <text x="1114" y="147" class="sub" text-anchor="middle">WB</text>
+  <rect x="960" y="88" width="32" height="14" rx="2" fill="#c46f12" opacity="0.85"/>
+  <rect x="1006" y="88" width="32" height="14" rx="2" fill="#c46f12" opacity="0.85"/>
+  <rect x="914" y="154" width="222" height="9" rx="2" fill="#c46f12" opacity="0.85"/>
+  <text x="1142" y="162" class="sub">hazard unit</text>
+  <rect x="900" y="176" width="360" height="473" rx="8" fill="#fbfbfb" stroke="#c46f12" stroke-width="1.6"/>
+  <rect x="910" y="185" width="340" height="22" rx="4" fill="#fde7cf"/>
+  <text x="918" y="200" class="ttl2">You build</text>
+  <text x="918" y="222" class="lblb">1.</text>
+  <text x="936" y="222" class="lbl">control_unit: add MemRead, Branch, Jump, Jalr;</text>
+  <text x="936" y="237" class="lbl">drop the PCSrc output and BranchTaken input</text>
+  <text x="918" y="252" class="lblb">2.</text>
+  <text x="936" y="252" class="lbl">hazard_unit.sv: forwarding, load-use stall, flush,</text>
+  <text x="936" y="267" class="lbl">memory stall</text>
+  <text x="918" y="282" class="lblb">3.</text>
+  <text x="936" y="282" class="lbl">Mispredict + redirect logic in EX</text>
+  <text x="918" y="297" class="sub">Mon 30 → Wed 2: wire in MemBusyM and the real</text>
+  <text x="918" y="312" class="sub">predictor with C; check stall and flush priority</text>
+  <rect x="910" y="324" width="340" height="22" rx="4" fill="#fde7cf"/>
+  <text x="918" y="339" class="ttl2">Done when</text>
+  <text x="918" y="361" class="lbl">•</text>
+  <text x="934" y="361" class="lbl">hazard_unit_tb passes (C writes it)</text>
+  <text x="918" y="376" class="lbl">•</text>
+  <text x="934" y="376" class="lbl">top-hazards_tb passes (C writes it)</text>
+  <text x="918" y="391" class="lbl">•</text>
+  <text x="934" y="391" class="lbl">all 42 tests pass on the pipeline branch</text>
+  <rect x="910" y="403" width="340" height="22" rx="4" fill="#fde7cf"/>
+  <text x="918" y="418" class="ttl2">You write the tests for D (cache)</text>
+  <text x="918" y="440" class="lbl">•</text>
+  <text x="934" y="440" class="lbl">cache vs a C++ byte-array model: random + directed</text>
+  <text x="918" y="455" class="lbl">•</text>
+  <text x="934" y="455" class="lbl">all load and store sizes; LATENCY 0, 6, 12</text>
+  <text x="918" y="470" class="lbl">•</text>
+  <text x="934" y="470" class="lbl">four sequential words = 1 miss + 3 hits</text>
+  <text x="918" y="485" class="lbl">•</text>
+  <text x="934" y="485" class="lbl">MemBusy handshake against a stub pipeline</text>
+  <rect x="910" y="497" width="340" height="22" rx="4" fill="#fde7cf"/>
+  <text x="918" y="512" class="ttl2">Talks to</text>
+  <text x="918" y="534" class="lbl">•</text>
+  <text x="934" y="534" class="lbl">B: en / clr on stage registers, Forward* muxes</text>
+  <text x="918" y="549" class="lbl">•</text>
+  <text x="934" y="549" class="lbl">C: MispredictE and Update* to the predictor</text>
+  <text x="918" y="564" class="lbl">•</text>
+  <text x="934" y="564" class="lbl">D: MemBusyM from the cache</text>
+  <rect x="910" y="576" width="340" height="22" rx="4" fill="#fde7cf"/>
+  <text x="918" y="591" class="ttl2">If Gate 1 slips</text>
+  <text x="918" y="613" class="lbl">•</text>
+  <text x="934" y="613" class="lbl">Mon 30: the cache pair (C + D) joins the pipeline</text>
+  <text x="936" y="628" class="lbl">debugging. Gate 1 (Sun 29) is the date to hit.</text>
+</svg>

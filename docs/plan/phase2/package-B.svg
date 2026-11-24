@@ -1,0 +1,219 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 800" width="1280" height="800" font-family="Helvetica, Arial, sans-serif">
+  <title>Package B · Pipeline datapath</title>
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#333"/>
+    </marker>
+    <style>
+      .w   { stroke:#333; stroke-width:1.6; fill:none; }
+      .wt  { stroke:#333; stroke-width:1.1; fill:none; }
+      .bus { stroke:#666; stroke-width:3; fill:none; }
+      .fwd { stroke:#2e8b47; stroke-width:1.8; fill:none; stroke-dasharray:6 3; }
+      .hz  { stroke:#c46f12; stroke-width:1.6; fill:none; stroke-dasharray:3 3; }
+      .mem { stroke:#7a3fb0; stroke-width:1.8; fill:none; }
+      .lbl { font-size:11px; fill:#333; }
+      .lblb{ font-size:11px; fill:#333; font-weight:bold; }
+      .sig { font-size:10.5px; fill:#1f5fbf; font-style:italic; }
+      .ttl { font-size:14px; font-weight:bold; fill:#111; }
+      .ttl2{ font-size:12.5px; font-weight:bold; fill:#111; }
+      .sub { font-size:10.5px; fill:#555; }
+      .mono{ font-size:10.5px; fill:#222; font-family:DejaVu Sans Mono, Consolas, monospace; }
+      .A   { fill:#fde7cf; stroke:#c46f12; stroke-width:2.2; }
+      .B   { fill:#dcf2df; stroke:#2e8b47; stroke-width:2.2; }
+      .C   { fill:#dbe9fb; stroke:#2f6db5; stroke-width:2.2; }
+      .D   { fill:#efe3f8; stroke:#7a3fb0; stroke-width:2.2; }
+      .G   { fill:#eeeeee; stroke:#888; stroke-width:1.8; }
+      .new { stroke-dasharray:6 4; }
+      .band{ fill:#f6f8fb; stroke:none; }
+      .bt  { font-size:13px; font-weight:bold; fill:#fff; text-anchor:middle; }
+    </style>
+  </defs>
+  <rect width="1280" height="800" fill="#ffffff"/>
+  <text x="56" y="28" style="font-size:18px;font-weight:bold;fill:#111">Package B · Pipeline datapath</text>
+  <text x="56" y="46" class="sub">Pipeline pair (A + B) · B's work is tested by D · B writes the tests for C (main memory model, pc_top, predictor)</text>
+  <circle cx="32" cy="30" r="15" fill="#2e8b47"/>
+  <text x="32" y="35" class="bt">B</text>
+  <text x="20" y="84" class="ttl">IF/ID</text>
+  <text x="226" y="84" class="sub" text-anchor="end">IF → ID</text>
+  <rect x="20" y="94" width="206" height="24" fill="#dcf2df" stroke="#2e8b47" stroke-width="1.4"/>
+  <text x="28" y="110" class="lbl">InstrD [32]</text>
+  <rect x="20" y="118" width="206" height="24" fill="#dcf2df" stroke="#2e8b47" stroke-width="1.4"/>
+  <text x="28" y="134" class="lbl">PCD [32]</text>
+  <rect x="20" y="142" width="206" height="24" fill="#dcf2df" stroke="#2e8b47" stroke-width="1.4"/>
+  <text x="28" y="158" class="lbl">PCPlus4D [32]</text>
+  <rect x="20" y="166" width="206" height="24" fill="#dcf2df" stroke="#2e8b47" stroke-width="1.4" stroke-dasharray="5 3"/>
+  <text x="28" y="182" class="lbl">PredTakenD [1]   reserved</text>
+  <rect x="20" y="190" width="206" height="24" fill="#dcf2df" stroke="#2e8b47" stroke-width="1.4" stroke-dasharray="5 3"/>
+  <text x="28" y="206" class="lbl">PredTargetD [32]   reserved</text>
+  <text x="20" y="230" class="sig">en: ~StallD    clr: FlushD</text>
+  <text x="238" y="84" class="ttl">ID/EX</text>
+  <text x="444" y="84" class="sub" text-anchor="end">ID → EX</text>
+  <rect x="238" y="94" width="206" height="24" fill="#f1faf2" stroke="#2e8b47" stroke-width="1.4"/>
+  <text x="246" y="110" class="lbl" style="font-size:10px">RegWriteE MemWriteE MemReadE</text>
+  <rect x="238" y="118" width="206" height="24" fill="#f1faf2" stroke="#2e8b47" stroke-width="1.4"/>
+  <text x="246" y="134" class="lbl" style="font-size:10px">ResultSrcE [2]  ALUControlE [4]</text>
+  <rect x="238" y="142" width="206" height="24" fill="#f1faf2" stroke="#2e8b47" stroke-width="1.4"/>
+  <text x="246" y="158" class="lbl" style="font-size:10px">ALUSrcE  ALUSrcAE</text>
+  <rect x="238" y="166" width="206" height="24" fill="#f1faf2" stroke="#2e8b47" stroke-width="1.4"/>
+  <text x="246" y="182" class="lbl" style="font-size:10px">BranchE  JumpE  JalrE</text>
+  <rect x="238" y="190" width="206" height="24" fill="#dcf2df" stroke="#2e8b47" stroke-width="1.4"/>
+  <text x="246" y="206" class="lbl">RD1E [32]</text>
+  <rect x="238" y="214" width="206" height="24" fill="#dcf2df" stroke="#2e8b47" stroke-width="1.4"/>
+  <text x="246" y="230" class="lbl">RD2E [32]</text>
+  <rect x="238" y="238" width="206" height="24" fill="#dcf2df" stroke="#2e8b47" stroke-width="1.4"/>
+  <text x="246" y="254" class="lbl">ImmExtE [32]</text>
+  <rect x="238" y="262" width="206" height="24" fill="#dcf2df" stroke="#2e8b47" stroke-width="1.4"/>
+  <text x="246" y="278" class="lbl">PCE [32]</text>
+  <rect x="238" y="286" width="206" height="24" fill="#dcf2df" stroke="#2e8b47" stroke-width="1.4"/>
+  <text x="246" y="302" class="lbl">PCPlus4E [32]</text>
+  <rect x="238" y="310" width="206" height="24" fill="#dcf2df" stroke="#2e8b47" stroke-width="1.4"/>
+  <text x="246" y="326" class="lbl">Rs1E  Rs2E  RdE  [5 each]</text>
+  <rect x="238" y="334" width="206" height="24" fill="#dcf2df" stroke="#2e8b47" stroke-width="1.4"/>
+  <text x="246" y="350" class="lbl">funct3E [3]</text>
+  <rect x="238" y="358" width="206" height="24" fill="#dcf2df" stroke="#2e8b47" stroke-width="1.4" stroke-dasharray="5 3"/>
+  <text x="246" y="374" class="lbl">PredTakenE [1]   reserved</text>
+  <rect x="238" y="382" width="206" height="24" fill="#dcf2df" stroke="#2e8b47" stroke-width="1.4" stroke-dasharray="5 3"/>
+  <text x="246" y="398" class="lbl">PredTargetE [32]   reserved</text>
+  <text x="238" y="422" class="sig">en: ~StallE    clr: FlushE</text>
+  <text x="456" y="84" class="ttl">EX/MEM</text>
+  <text x="662" y="84" class="sub" text-anchor="end">EX → MEM</text>
+  <rect x="456" y="94" width="206" height="24" fill="#f1faf2" stroke="#2e8b47" stroke-width="1.4"/>
+  <text x="464" y="110" class="lbl" style="font-size:10px">RegWriteM MemWriteM MemReadM</text>
+  <rect x="456" y="118" width="206" height="24" fill="#dcf2df" stroke="#2e8b47" stroke-width="1.4"/>
+  <text x="464" y="134" class="lbl">ExecResultM [32]</text>
+  <rect x="456" y="142" width="206" height="24" fill="#dcf2df" stroke="#2e8b47" stroke-width="1.4"/>
+  <text x="464" y="158" class="lbl">WriteDataM [32]</text>
+  <rect x="456" y="166" width="206" height="24" fill="#dcf2df" stroke="#2e8b47" stroke-width="1.4"/>
+  <text x="464" y="182" class="lbl">RdM [5]</text>
+  <rect x="456" y="190" width="206" height="24" fill="#dcf2df" stroke="#2e8b47" stroke-width="1.4"/>
+  <text x="464" y="206" class="lbl">funct3M [3]</text>
+  <text x="456" y="230" class="sig">en: ~StallM    clr: none</text>
+  <text x="674" y="84" class="ttl">MEM/WB</text>
+  <text x="880" y="84" class="sub" text-anchor="end">MEM → WB</text>
+  <rect x="674" y="94" width="206" height="24" fill="#f1faf2" stroke="#2e8b47" stroke-width="1.4"/>
+  <text x="682" y="110" class="lbl" style="font-size:10px">RegWriteW  MemReadW</text>
+  <rect x="674" y="118" width="206" height="24" fill="#dcf2df" stroke="#2e8b47" stroke-width="1.4"/>
+  <text x="682" y="134" class="lbl">ExecResultW [32]</text>
+  <rect x="674" y="142" width="206" height="24" fill="#dcf2df" stroke="#2e8b47" stroke-width="1.4"/>
+  <text x="682" y="158" class="lbl">ReadDataW [32]</text>
+  <rect x="674" y="166" width="206" height="24" fill="#dcf2df" stroke="#2e8b47" stroke-width="1.4"/>
+  <text x="682" y="182" class="lbl">RdW [5]</text>
+  <text x="674" y="206" class="sig">en: always    clr: FlushW</text>
+  <rect x="20" y="456" width="14" height="14" fill="#f1faf2" stroke="#2e8b47" stroke-width="1.4"/>
+  <text x="40" y="468" class="sub">control bits (from the control unit)</text>
+  <rect x="262" y="456" width="14" height="14" fill="#dcf2df" stroke="#2e8b47" stroke-width="1.4" stroke-dasharray="5 3"/>
+  <text x="282" y="468" class="sub">reserved slot, tied to 0 until the predictor is attached</text>
+  <text x="600" y="468" class="sub">ALUSrcAE = ALUSrcA in stage E</text>
+  <rect x="20" y="490" width="280" height="300" rx="6" fill="#ffffff" stroke="#2e8b47" stroke-width="1.6"/>
+  <rect x="20" y="490" width="280" height="22" rx="6" fill="#dcf2df"/>
+  <rect x="20" y="502" width="280" height="10" fill="#dcf2df"/>
+  <text x="30" y="506" class="ttl2">Forwarding muxes (EX)</text>
+  <text x="30" y="534" class="mono">ForwardAE   SrcAE comes from</text>
+  <text x="30" y="550" class="mono">  00   RD1E</text>
+  <text x="30" y="566" class="mono">  01   ResultW       (WB)</text>
+  <text x="30" y="582" class="mono">  10   ExecResultM   (MEM)</text>
+  <text x="30" y="598" class="mono">ForwardBE   same, with RD2E</text>
+  <text x="30" y="630" class="lbl">The forwarded RD2E value also feeds</text>
+  <text x="30" y="645" class="lbl">WriteDataE (store data) and the branch</text>
+  <text x="30" y="660" class="lbl">unit, so a store or branch right after</text>
+  <text x="30" y="675" class="lbl">an ALU op sees the new value.</text>
+  <text x="30" y="690" class="lbl">x0 is never forwarded: the hazard unit</text>
+  <text x="30" y="705" class="lbl">checks Rd != 0. The Forward* selects come</text>
+  <text x="30" y="720" class="lbl">from A's hazard unit.</text>
+  <rect x="310" y="490" width="280" height="300" rx="6" fill="#ffffff" stroke="#2e8b47" stroke-width="1.6"/>
+  <rect x="310" y="490" width="280" height="22" rx="6" fill="#dcf2df"/>
+  <rect x="310" y="502" width="280" height="10" fill="#dcf2df"/>
+  <text x="320" y="506" class="ttl2">ExecResult mux (EX) and WB</text>
+  <text x="320" y="534" class="mono">ResultSrcE   ExecResultE</text>
+  <text x="320" y="550" class="mono">  00, 01   ALUResultE</text>
+  <text x="320" y="566" class="mono">  10       PCPlus4E   (jal, jalr)</text>
+  <text x="320" y="582" class="mono">  11       ImmExtE    (lui)</text>
+  <text x="320" y="614" class="lbl">Loads and stores carry their address in</text>
+  <text x="320" y="629" class="lbl">ExecResultM. auipc goes through the ALU</text>
+  <text x="320" y="644" class="lbl">with ALUSrcA = PCE.</text>
+  <text x="320" y="659" class="lbl">Why: jal, jalr, lui and auipc results can</text>
+  <text x="320" y="674" class="lbl">then be forwarded from MEM with no extra</text>
+  <text x="320" y="689" class="lbl">muxes.</text>
+  <text x="320" y="722" class="mono">WB:  ResultW =</text>
+  <text x="320" y="738" class="mono">  MemReadW ? ReadDataW : ExecResultW</text>
+  <rect x="600" y="490" width="280" height="300" rx="6" fill="#ffffff" stroke="#2e8b47" stroke-width="1.6"/>
+  <rect x="600" y="490" width="280" height="22" rx="6" fill="#dcf2df"/>
+  <rect x="600" y="502" width="280" height="10" fill="#dcf2df"/>
+  <text x="610" y="506" class="ttl2">Also yours</text>
+  <text x="610" y="534" class="lbl">regfile write-through: a read of A1/A2</text>
+  <text x="610" y="549" class="lbl">returns WD3 if WE3 &amp; A3 != 0 &amp; A3 matches.</text>
+  <text x="610" y="564" class="lbl"></text>
+  <text x="610" y="579" class="lbl">branch_unit moves to EX and compares the</text>
+  <text x="610" y="594" class="lbl">forwarded operands.</text>
+  <text x="610" y="609" class="lbl"></text>
+  <text x="610" y="624" class="lbl">PCTargetE adder: PCE + ImmExtE (moved</text>
+  <text x="610" y="639" class="lbl">here from pc_top).</text>
+  <text x="610" y="654" class="lbl"></text>
+  <text x="610" y="669" class="lbl">top.sv keeps its ports: clk, rst, trigger, a0.</text>
+  <text x="610" y="684" class="lbl">Wire pc_top: en = ~StallF.</text>
+  <text x="610" y="699" class="lbl"></text>
+  <text x="610" y="714" class="lbl">A bubble has RegWrite, MemWrite, MemRead,</text>
+  <text x="610" y="729" class="lbl">Branch, Jump, Jalr all 0.</text>
+  <text x="610" y="754" class="mono">Files: if_id.sv  id_ex.sv</text>
+  <text x="610" y="770" class="mono">       ex_mem.sv mem_wb.sv</text>
+  <text x="910" y="76" class="lblb">Where it sits</text>
+  <rect x="910" y="84" width="40" height="52" rx="3" fill="#f1f3f6" stroke="#c9ced6"/>
+  <text x="930" y="147" class="sub" text-anchor="middle">IF</text>
+  <rect x="956" y="84" width="40" height="52" rx="3" fill="#f1f3f6" stroke="#c9ced6"/>
+  <text x="976" y="147" class="sub" text-anchor="middle">ID</text>
+  <rect x="1002" y="84" width="40" height="52" rx="3" fill="#f1f3f6" stroke="#c9ced6"/>
+  <text x="1022" y="147" class="sub" text-anchor="middle">EX</text>
+  <rect x="1048" y="84" width="40" height="52" rx="3" fill="#f1f3f6" stroke="#c9ced6"/>
+  <text x="1068" y="147" class="sub" text-anchor="middle">MEM</text>
+  <rect x="1094" y="84" width="40" height="52" rx="3" fill="#f1f3f6" stroke="#c9ced6"/>
+  <text x="1114" y="147" class="sub" text-anchor="middle">WB</text>
+  <rect x="914" y="122" width="32" height="8" rx="2" fill="#2e8b47" opacity="0.85"/>
+  <rect x="960" y="92" width="32" height="8" rx="2" fill="#2e8b47" opacity="0.85"/>
+  <rect x="960" y="122" width="32" height="8" rx="2" fill="#2e8b47" opacity="0.85"/>
+  <rect x="1006" y="92" width="32" height="40" rx="2" fill="#2e8b47" opacity="0.85"/>
+  <rect x="1006" y="122" width="32" height="8" rx="2" fill="#2e8b47" opacity="0.85"/>
+  <rect x="900" y="176" width="360" height="473" rx="8" fill="#fbfbfb" stroke="#2e8b47" stroke-width="1.6"/>
+  <rect x="910" y="185" width="340" height="22" rx="4" fill="#dcf2df"/>
+  <text x="918" y="200" class="ttl2">You build</text>
+  <text x="918" y="222" class="lblb">1.</text>
+  <text x="936" y="222" class="lbl">Four stage registers, each with en and clr</text>
+  <text x="918" y="237" class="lblb">2.</text>
+  <text x="936" y="237" class="lbl">Pipelined top.sv (ports unchanged)</text>
+  <text x="918" y="252" class="lblb">3.</text>
+  <text x="936" y="252" class="lbl">Forwarding muxes, ExecResult mux, PCTargetE adder,</text>
+  <text x="936" y="267" class="lbl">branch_unit in EX</text>
+  <text x="918" y="282" class="lblb">4.</text>
+  <text x="936" y="282" class="lbl">regfile write-through</text>
+  <text x="918" y="297" class="sub">Mon 30 → Wed 2: plug in the cache (with D) and the</text>
+  <text x="918" y="312" class="sub">predictor (with A, C); merge pipeline → main</text>
+  <rect x="910" y="324" width="340" height="22" rx="4" fill="#dcf2df"/>
+  <text x="918" y="339" class="ttl2">Done when</text>
+  <text x="918" y="361" class="lbl">•</text>
+  <text x="934" y="361" class="lbl">all 42 tests pass on pipeline, then on main</text>
+  <text x="918" y="376" class="lbl">•</text>
+  <text x="934" y="376" class="lbl">stage-register tests pass (D writes them)</text>
+  <text x="918" y="391" class="lbl">•</text>
+  <text x="934" y="391" class="lbl">reserved prediction slots exist and are tied to 0</text>
+  <rect x="910" y="403" width="340" height="22" rx="4" fill="#dcf2df"/>
+  <text x="918" y="418" class="ttl2">You write the tests for C</text>
+  <text x="918" y="440" class="lbl">•</text>
+  <text x="934" y="440" class="lbl">main_mem: LATENCY, line fill, data.hex at 0x10000</text>
+  <text x="918" y="455" class="lbl">•</text>
+  <text x="934" y="455" class="lbl">pc_top: holds on en = 0, PCPlus4, next-PC priority</text>
+  <text x="918" y="470" class="lbl">•</text>
+  <text x="934" y="470" class="lbl">branch_predictor: loop trained after two,</text>
+  <text x="936" y="485" class="lbl">hysteresis, aliasing (trace-driven)</text>
+  <rect x="910" y="497" width="340" height="22" rx="4" fill="#dcf2df"/>
+  <text x="918" y="512" class="ttl2">Talks to</text>
+  <text x="918" y="534" class="lbl">•</text>
+  <text x="934" y="534" class="lbl">A: en / clr, Forward*, control bits</text>
+  <text x="918" y="549" class="lbl">•</text>
+  <text x="934" y="549" class="lbl">D: cache ports and MemBusyM in MEM</text>
+  <text x="918" y="564" class="lbl">•</text>
+  <text x="934" y="564" class="lbl">C: pc_top, Pred* in IF, Update* from EX</text>
+  <rect x="910" y="576" width="340" height="22" rx="4" fill="#dcf2df"/>
+  <text x="918" y="591" class="ttl2">If Gate 1 slips</text>
+  <text x="918" y="613" class="lbl">•</text>
+  <text x="934" y="613" class="lbl">Mon 30: the cache pair (C + D) joins the pipeline</text>
+  <text x="936" y="628" class="lbl">debugging. Gate 1 (Sun 29) is the date to hit.</text>
+</svg>

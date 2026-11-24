@@ -1,0 +1,319 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1380 910" width="1380" height="910" font-family="Helvetica, Arial, sans-serif">
+  <title>Phase 2: 5-stage pipeline with data cache and branch predictor, by package</title>
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#333"/>
+    </marker>
+    <style>
+      .w   { stroke:#333; stroke-width:1.6; fill:none; }
+      .wt  { stroke:#333; stroke-width:1.1; fill:none; }
+      .bus { stroke:#666; stroke-width:3; fill:none; }
+      .fwd { stroke:#2e8b47; stroke-width:1.8; fill:none; stroke-dasharray:6 3; }
+      .hz  { stroke:#c46f12; stroke-width:1.6; fill:none; stroke-dasharray:3 3; }
+      .mem { stroke:#7a3fb0; stroke-width:1.8; fill:none; }
+      .lbl { font-size:11px; fill:#333; }
+      .lblb{ font-size:11px; fill:#333; font-weight:bold; }
+      .sig { font-size:10.5px; fill:#1f5fbf; font-style:italic; }
+      .ttl { font-size:14px; font-weight:bold; fill:#111; }
+      .ttl2{ font-size:12.5px; font-weight:bold; fill:#111; }
+      .sub { font-size:10.5px; fill:#555; }
+      .mono{ font-size:10.5px; fill:#222; font-family:DejaVu Sans Mono, Consolas, monospace; }
+      .A   { fill:#fde7cf; stroke:#c46f12; stroke-width:2.2; }
+      .B   { fill:#dcf2df; stroke:#2e8b47; stroke-width:2.2; }
+      .C   { fill:#dbe9fb; stroke:#2f6db5; stroke-width:2.2; }
+      .D   { fill:#efe3f8; stroke:#7a3fb0; stroke-width:2.2; }
+      .G   { fill:#eeeeee; stroke:#888; stroke-width:1.8; }
+      .new { stroke-dasharray:6 4; }
+      .band{ fill:#f6f8fb; stroke:none; }
+      .bt  { font-size:13px; font-weight:bold; fill:#fff; text-anchor:middle; }
+    </style>
+  </defs>
+  <rect width="1380" height="910" fill="#ffffff"/>
+  <text x="20" y="28" style="font-size:18px;font-weight:bold;fill:#111">Phase 2: 5-stage pipeline with data cache and branch predictor, by package</text>
+  <text x="20" y="46" class="sub">Grey = reused as is. Solid colour = changed. Dashed colour = new. Blue italic = control signals. Signal names follow interfaces.md (stage suffix F D E M W).</text>
+  <rect x="14" y="56" width="252" height="548" rx="6" class="band"/>
+  <text x="22" y="596" class="sub"><tspan font-weight="bold">IF</tspan>  Fetch</text>
+  <rect x="286" y="56" width="280" height="548" rx="6" class="band"/>
+  <text x="294" y="596" class="sub"><tspan font-weight="bold">ID</tspan>  Decode</text>
+  <rect x="586" y="56" width="320" height="548" rx="6" class="band"/>
+  <text x="594" y="596" class="sub"><tspan font-weight="bold">EX</tspan>  Execute</text>
+  <rect x="926" y="56" width="300" height="548" rx="6" class="band"/>
+  <text x="934" y="596" class="sub"><tspan font-weight="bold">MEM</tspan>  Memory</text>
+  <rect x="1256" y="56" width="110" height="548" rx="6" class="band"/>
+  <text x="1264" y="596" class="sub"><tspan font-weight="bold">WB</tspan>  Write back</text>
+  <rect x="268" y="110" width="16" height="414" rx="3" class="B"/>
+  <text x="276" y="104" class="lblb" text-anchor="middle" style="fill:#2e8b47">IF/ID</text>
+  <rect x="568" y="110" width="16" height="414" rx="3" class="B"/>
+  <text x="576" y="104" class="lblb" text-anchor="middle" style="fill:#2e8b47">ID/EX</text>
+  <rect x="908" y="110" width="16" height="414" rx="3" class="B"/>
+  <text x="916" y="104" class="lblb" text-anchor="middle" style="fill:#2e8b47">EX/MEM</text>
+  <rect x="1236" y="110" width="16" height="414" rx="3" class="B"/>
+  <text x="1244" y="104" class="lblb" text-anchor="middle" style="fill:#2e8b47">MEM/WB</text>
+  <rect x="24" y="110" width="230" height="66" rx="4" class="C new"/>
+  <text x="139.0" y="132" class="ttl" text-anchor="middle">Branch predictor</text>
+  <text x="139.0" y="146" class="sub" text-anchor="middle">BTB + 2-bit counters</text>
+  <text x="139.0" y="159" class="sub" text-anchor="middle">out: PredTakenF, PredTargetF</text>
+  <circle cx="24" cy="110" r="11" fill="#2f6db5"/>
+  <text x="24" y="115" class="bt">C</text>
+  <polygon points="30,232 52,242.08 52,305.92 30,316" class="C"/>
+  <circle cx="30" cy="232" r="9" fill="#2f6db5"/>
+  <text x="30" y="237" class="bt">C</text>
+  <text x="56" y="228" class="sig">next PC</text>
+  <rect x="74" y="256" width="54" height="40" rx="4" class="C"/>
+  <text x="101.0" y="281" class="ttl" text-anchor="middle">PC</text>
+  <text x="101" y="311" class="sig" text-anchor="middle">en: StallF</text>
+  <rect x="158" y="236" width="94" height="80" rx="4" class="G"/>
+  <text x="205.0" y="270" class="ttl" text-anchor="middle">Instruction</text>
+  <text x="205.0" y="286" class="ttl" text-anchor="middle">Memory</text>
+  <polygon points="112,346 162,357 162,379 112,390 112,373 120,368 112,363" class="C"/>
+  <text x="143.0" y="372.0" class="lbl" text-anchor="middle">+</text>
+  <circle cx="112" cy="346" r="9" fill="#2f6db5"/>
+  <text x="112" y="351" class="bt">C</text>
+  <text x="98" y="386" class="lbl" text-anchor="end">4</text>
+  <path d="M52,274 L74,274" class="w" marker-end="url(#arr)"/>
+  <path d="M128,276 L158,276" class="w" marker-end="url(#arr)"/>
+  <circle cx="142" cy="276" r="2.6" fill="#333"/>
+  <path d="M142,276 L142,176" class="w" marker-end="url(#arr)"/>
+  <text x="148" y="214" class="lbl">PCF</text>
+  <path d="M102,296 L102,358 L112,358" class="w" marker-end="url(#arr)"/>
+  <path d="M104,382 L112,382" class="w" marker-end="url(#arr)"/>
+  <path d="M162,368 L176,368" class="w"/>
+  <circle cx="176" cy="368" r="2.6" fill="#333"/>
+  <path d="M176,368 L268,368" class="w" marker-end="url(#arr)"/>
+  <text x="184" y="362" class="lbl">PCPlus4F</text>
+  <path d="M176,368 L176,440 L22,440 L22,302 L30,302" class="w" marker-end="url(#arr)"/>
+  <path d="M24,140 L16,140 L16,246 L30,246" class="w" marker-end="url(#arr)"/>
+  <text x="21" y="196" class="lbl">PredTargetF</text>
+  <path d="M254,140 L268,140" class="w" marker-end="url(#arr)"/>
+  <path d="M252,276 L268,276" class="w" marker-end="url(#arr)"/>
+  <path d="M770,110 L770,70 L8,70 L8,274 L30,274" class="w" marker-end="url(#arr)"/>
+  <text x="14" y="66" class="lbl">RedirectPCE (mispredict, from EX)</text>
+  <path d="M700,110 L700,84 L60,84 L60,110" class="w" marker-end="url(#arr)"/>
+  <text x="300" y="80" class="sub">UpdateEn · UpdatePC · UpdateTaken · UpdateTarget (to predictor)</text>
+  <circle cx="120" cy="84" r="8" fill="#fff" stroke="#111" stroke-width="1.5"/>
+  <text x="120" y="88" text-anchor="middle" style="font-size:11px;font-weight:bold;fill:#111">2</text>
+  <rect x="296" y="110" width="170" height="76" rx="4" class="A"/>
+  <text x="381.0" y="130" class="ttl" text-anchor="middle">Control Unit</text>
+  <text x="381.0" y="144" class="sub" text-anchor="middle">+ MemRead, Branch,</text>
+  <text x="381.0" y="157" class="sub" text-anchor="middle">Jump, Jalr</text>
+  <text x="381.0" y="170" class="sub" text-anchor="middle">− PCSrc, BranchTaken in</text>
+  <circle cx="296" cy="110" r="11" fill="#c46f12"/>
+  <text x="296" y="115" class="bt">A</text>
+  <rect x="330" y="216" width="140" height="114" rx="4" class="B"/>
+  <text x="400.0" y="238" class="ttl" text-anchor="middle">Register File</text>
+  <circle cx="330" cy="216" r="11" fill="#2e8b47"/>
+  <text x="330" y="221" class="bt">B</text>
+  <text x="400" y="322" class="sub" text-anchor="middle">write-through (new)</text>
+  <text x="336" y="250" class="lbl">A1</text>
+  <text x="336" y="270" class="lbl">A2</text>
+  <text x="336" y="290" class="lbl">A3</text>
+  <text x="336" y="310" class="lbl">WD3</text>
+  <text x="464" y="250" class="lbl" text-anchor="end">RD1</text>
+  <text x="464" y="270" class="lbl" text-anchor="end">RD2</text>
+  <text x="474" y="230" class="sig">WE3 ← RegWriteW</text>
+  <rect x="330" y="372" width="140" height="48" rx="4" class="G"/>
+  <text x="400.0" y="401" class="ttl" text-anchor="middle">Sign Extend</text>
+  <text x="400" y="438" class="sig" text-anchor="middle">ImmSrcD</text>
+  <path d="M284,136 L296,136" class="w" marker-end="url(#arr)"/>
+  <text x="290" y="202" class="sub">op · funct3 · funct7b5</text>
+  <path d="M284,246 L330,246" class="w" marker-end="url(#arr)"/>
+  <text x="290" y="242" class="lbl">Rs1D</text>
+  <path d="M284,266 L330,266" class="w" marker-end="url(#arr)"/>
+  <text x="290" y="262" class="lbl">Rs2D</text>
+  <path d="M284,396 L330,396" class="w" marker-end="url(#arr)"/>
+  <text x="290" y="392" class="lbl">InstrD</text>
+  <path d="M470,246 L568,246" class="w" marker-end="url(#arr)"/>
+  <text x="520" y="242" class="lbl">RD1D</text>
+  <path d="M470,266 L568,266" class="w" marker-end="url(#arr)"/>
+  <text x="520" y="262" class="lbl">RD2D</text>
+  <path d="M470,396 L568,396" class="w" marker-end="url(#arr)"/>
+  <text x="500" y="392" class="lbl">ImmExtD</text>
+  <path d="M466,148 L568,148" class="w" marker-end="url(#arr)"/>
+  <text x="492" y="142" class="sig">control</text>
+  <path d="M284,482 L568,482" class="bus"/>
+  <polygon points="568.0,482.0 559.0,487.0 559.0,477.0" fill="#666"/>
+  <text x="344" y="462" class="sub">PCD · PCPlus4D</text>
+  <text x="344" y="474" class="sub">PredTakenD · PredTargetD</text>
+  <text x="344" y="498" class="sub">Rs1D · Rs2D · RdD · funct3D</text>
+  <rect x="640" y="110" width="256" height="76" rx="4" class="A new"/>
+  <text x="768.0" y="132" class="ttl" text-anchor="middle">Mispredict + redirect</text>
+  <text x="768.0" y="146" class="sub" text-anchor="middle">out: MispredictE, RedirectPCE</text>
+  <text x="768.0" y="159" class="sub" text-anchor="middle">in: BranchE JumpE JalrE BranchTakenE</text>
+  <text x="768.0" y="172" class="sub" text-anchor="middle">PCTargetE ALUResultE PredTakenE/TargetE</text>
+  <circle cx="640" cy="110" r="11" fill="#c46f12"/>
+  <text x="640" y="115" class="bt">A</text>
+  <rect x="690" y="212" width="90" height="42" rx="4" class="B"/>
+  <text x="735.0" y="231" class="ttl" text-anchor="middle">Branch unit</text>
+  <text x="735.0" y="245" class="sub" text-anchor="middle">moved to EX</text>
+  <circle cx="690" cy="212" r="11" fill="#2e8b47"/>
+  <text x="690" y="217" class="bt">B</text>
+  <polygon points="818,208 868,220 868,242 818,254 818,237 826,231 818,225" class="B"/>
+  <text x="849.0" y="235.0" class="lbl" text-anchor="middle">+</text>
+  <circle cx="818" cy="254" r="9" fill="#2e8b47"/>
+  <text x="818" y="259" class="bt">B</text>
+  <text x="846" y="276" class="lbl" text-anchor="middle">PCTargetE</text>
+  <polygon points="616,290 638,304.4 638,395.6 616,410" class="B new"/>
+  <line x1="617" y1="350" x2="637" y2="350" stroke="#2e8b47" stroke-width="1.2"/>
+  <circle cx="627" cy="290" r="9" fill="#2e8b47"/>
+  <text x="627" y="295" class="bt">B</text>
+  <text transform="translate(633,404) rotate(-90)" class="sig">forward A / B</text>
+  <polygon points="700,296 776,326 776,376 700,406 700,365 714,351 700,337" class="G"/>
+  <text x="740" y="358" class="ttl" text-anchor="middle">ALU</text>
+  <text x="742" y="426" class="sub">ALUSrcA/ALUSrc</text>
+  <text x="742" y="438" class="sub">muxes inside</text>
+  <polygon points="818,296 840,309.2 840,392.8 818,406" class="B new"/>
+  <circle cx="818" cy="296" r="9" fill="#2e8b47"/>
+  <text x="818" y="301" class="bt">B</text>
+  <text transform="translate(833,401) rotate(-90)" class="sig">ExecResult mux</text>
+  <path d="M584,300 L616,300" class="w" marker-end="url(#arr)"/>
+  <path d="M584,366 L616,366" class="w" marker-end="url(#arr)"/>
+  <path d="M594,566 L594,316 L616,316" class="fwd" marker-end="url(#arr)"/>
+  <circle cx="594" cy="382" r="2.6" fill="#2e8b47"/>
+  <path d="M594,382 L616,382" class="fwd" marker-end="url(#arr)"/>
+  <path d="M604,548 L604,332 L616,332" class="fwd" marker-end="url(#arr)"/>
+  <circle cx="604" cy="398" r="2.6" fill="#2e8b47"/>
+  <path d="M604,398 L616,398" class="fwd" marker-end="url(#arr)"/>
+  <path d="M638,317 L700,317" class="w" marker-end="url(#arr)"/>
+  <path d="M638,383 L700,383" class="w" marker-end="url(#arr)"/>
+  <text x="644" y="311" class="lbl">SrcAE</text>
+  <text x="644" y="377" class="lbl">SrcBE</text>
+  <circle cx="650" cy="317" r="2.6" fill="#333"/>
+  <path d="M650,317 L650,222 L690,222" class="w" marker-end="url(#arr)"/>
+  <circle cx="662" cy="383" r="2.6" fill="#333"/>
+  <path d="M662,383 L662,242 L690,242" class="w" marker-end="url(#arr)"/>
+  <path d="M735,212 L735,186" class="w" marker-end="url(#arr)"/>
+  <text x="741" y="208" class="lbl">BranchTakenE</text>
+  <path d="M868,231 L880,231 L880,186" class="w" marker-end="url(#arr)"/>
+  <path d="M584,196 L835,196 L835,208" class="bus"/>
+  <polygon points="835.0,208.0 830.0,199.0 840.0,199.0" fill="#666"/>
+  <text x="596" y="192" class="sub">PCE · ImmExtE</text>
+  <path d="M776,350 L795,350" class="w"/>
+  <circle cx="795" cy="350" r="2.6" fill="#333"/>
+  <path d="M795,350 L818,350" class="w" marker-end="url(#arr)"/>
+  <text x="780" y="344" class="lbl">ALUResultE</text>
+  <path d="M795,350 L795,186" class="w" marker-end="url(#arr)"/>
+  <text x="790" y="280" class="sub" text-anchor="end">jalr target</text>
+  <path d="M584,450 L738,450 L738,406" class="bus"/>
+  <polygon points="738.0,406.0 743.0,415.0 733.0,415.0" fill="#666"/>
+  <path d="M738,450 L829,450 L829,406" class="bus"/>
+  <polygon points="829.0,406.0 834.0,415.0 824.0,415.0" fill="#666"/>
+  <text x="752" y="466" class="sub">PCE · PCPlus4E · ImmExtE</text>
+  <path d="M840,350 L908,350" class="w" marker-end="url(#arr)"/>
+  <text x="844" y="342" class="lbl">ExecResultE</text>
+  <circle cx="644" cy="383" r="2.6" fill="#333"/>
+  <path d="M644,383 L644,484 L908,484" class="w" marker-end="url(#arr)"/>
+  <text x="700" y="480" class="lbl">WriteDataE (store data)</text>
+  <path d="M584,506 L908,506" class="bus"/>
+  <polygon points="908.0,506.0 899.0,511.0 899.0,501.0" fill="#666"/>
+  <text x="746" y="520" class="sub" text-anchor="middle">control · RdE · funct3E</text>
+  <rect x="1050" y="296" width="124" height="108" rx="4" class="D new"/>
+  <text x="1112.0" y="340" class="ttl" text-anchor="middle">Data Cache</text>
+  <text x="1112.0" y="354" class="sub" text-anchor="middle">2-way · 16 B lines</text>
+  <text x="1112.0" y="367" class="sub" text-anchor="middle">LRU · write-through</text>
+  <circle cx="1050" cy="296" r="11" fill="#7a3fb0"/>
+  <text x="1050" y="301" class="bt">D</text>
+  <rect x="1050" y="470" width="136" height="48" rx="4" class="C new"/>
+  <text x="1118.0" y="490" class="ttl" text-anchor="middle">Main memory</text>
+  <text x="1118.0" y="504" class="sub" text-anchor="middle">LATENCY cycles</text>
+  <circle cx="1050" cy="470" r="11" fill="#2f6db5"/>
+  <text x="1050" y="475" class="bt">C</text>
+  <path d="M1112,404 L1112,470" class="mem" marker-end="url(#arr)" marker-start="url(#arr)"/>
+  <text x="1104" y="446" class="lbl" text-anchor="end">refill / write-through</text>
+  <path d="M924,326 L1050,326" class="w" marker-end="url(#arr)"/>
+  <circle cx="934" cy="326" r="2.6" fill="#333"/>
+  <path d="M924,362 L1050,362" class="w" marker-end="url(#arr)"/>
+  <path d="M924,394 L1050,394" class="w" marker-end="url(#arr)"/>
+  <text x="944" y="320" class="lbl">ExecResultM</text>
+  <text x="944" y="356" class="lbl">WriteDataM</text>
+  <text x="940" y="380" class="sig">MemRead, MemWrite,</text>
+  <text x="940" y="391" class="sig">funct3M</text>
+  <path d="M934,326 L934,422 L1236,422" class="w" marker-end="url(#arr)"/>
+  <text x="944" y="416" class="sub">ExecResultM (bypass the cache)</text>
+  <path d="M1174,350 L1236,350" class="w" marker-end="url(#arr)"/>
+  <text x="1178" y="342" class="lbl">ReadDataM</text>
+  <path d="M1174,392 L1210,392 L1210,664 L880,664" class="hz" marker-end="url(#arr)"/>
+  <text x="1204" y="538" class="sig" text-anchor="end">MemBusyM</text>
+  <circle cx="1210" cy="470" r="8" fill="#fff" stroke="#111" stroke-width="1.5"/>
+  <text x="1210" y="474" text-anchor="middle" style="font-size:11px;font-weight:bold;fill:#111">1</text>
+  <polygon points="1274,316 1296,324.4 1296,377.6 1274,386" class="G"/>
+  <text x="1262" y="412" class="sub">MemReadW ?</text>
+  <text x="1262" y="424" class="sub">ReadDataW :</text>
+  <text x="1262" y="436" class="sub">ExecResultW</text>
+  <path d="M1252,334 L1274,334" class="w" marker-end="url(#arr)"/>
+  <path d="M1252,368 L1274,368" class="w" marker-end="url(#arr)"/>
+  <path d="M1296,350 L1346,350 L1346,566 L594,566" class="fwd" marker-end="url(#arr)"/>
+  <text x="1300" y="344" class="lbl">ResultW</text>
+  <path d="M594,566 L322,566 L322,306 L330,306" class="w" marker-end="url(#arr)"/>
+  <path d="M1248,524 L1248,584 L312,584 L312,286 L330,286" class="w" marker-end="url(#arr)"/>
+  <text x="820" y="580" class="lbl">RdW, RegWriteW</text>
+  <text x="820" y="562" class="lbl">ResultW</text>
+  <path d="M934,422 L934,548 L604,548" class="fwd" marker-end="url(#arr)"/>
+  <text x="820" y="544" class="lbl">ExecResultM</text>
+  <rect x="340" y="626" width="540" height="92" rx="4" class="A new"/>
+  <text x="610.0" y="648" class="ttl" text-anchor="middle">Hazard Unit</text>
+  <text x="610.0" y="662" class="sub" text-anchor="middle">forward · load-use stall · flush · memory stall</text>
+  <text x="610.0" y="675" class="sub" text-anchor="middle">in: Rs1D Rs2D · Rs1E Rs2E RdE MemReadE · RdM RdW</text>
+  <text x="610.0" y="688" class="sub" text-anchor="middle">RegWriteM RegWriteW · MispredictE · MemBusyM</text>
+  <circle cx="340" cy="626" r="11" fill="#c46f12"/>
+  <text x="340" y="631" class="bt">A</text>
+  <path d="M627,626 L627,410" class="hz" marker-end="url(#arr)"/>
+  <text x="634" y="618" class="sig">ForwardAE, ForwardBE</text>
+  <path d="M340,672 L276,672 L276,524" class="hz" marker-end="url(#arr)"/>
+  <text x="150" y="668" class="sig">StallF, StallD, FlushD</text>
+  <path d="M560,626 L560,608 L576,608 L576,524" class="hz" marker-end="url(#arr)"/>
+  <text x="552" y="620" class="sig" text-anchor="end">StallE, FlushE</text>
+  <path d="M880,692 L916,692 L916,524" class="hz" marker-end="url(#arr)"/>
+  <text x="924" y="688" class="sig">StallM</text>
+  <path d="M880,708 L1240,708 L1240,524" class="hz" marker-end="url(#arr)"/>
+  <text x="1000" y="704" class="sig">FlushW</text>
+  <circle cx="872" cy="626" r="8" fill="#fff" stroke="#111" stroke-width="1.5"/>
+  <text x="872" y="630" text-anchor="middle" style="font-size:11px;font-weight:bold;fill:#111">3</text>
+  <path d="M896,164 L900,164 L900,612 L860,612 L860,626" class="hz" marker-end="url(#arr)"/>
+  <text x="856" y="608" class="sig" text-anchor="end">MispredictE</text>
+  <rect x="20" y="738" width="330" height="128" rx="6" fill="#fafafa" stroke="#bbb"/>
+  <text x="32" y="758" class="lblb">Packages (proposed, owners negotiated)</text>
+  <circle cx="40" cy="774" r="9" fill="#c46f12"/>
+  <text x="40" y="779" class="bt">A</text>
+  <text x="56" y="778" class="lbl">Hazard unit, control unit, redirect</text>
+  <circle cx="40" cy="796" r="9" fill="#2e8b47"/>
+  <text x="40" y="801" class="bt">B</text>
+  <text x="56" y="800" class="lbl">Stage registers, EX datapath, top.sv</text>
+  <circle cx="40" cy="818" r="9" fill="#2f6db5"/>
+  <text x="40" y="823" class="bt">C</text>
+  <text x="56" y="822" class="lbl">pc_top, main memory, predictor</text>
+  <circle cx="40" cy="840" r="9" fill="#7a3fb0"/>
+  <text x="40" y="845" class="bt">D</text>
+  <text x="56" y="844" class="lbl">Data cache core, benchmarks</text>
+  <rect x="370" y="738" width="330" height="128" rx="6" fill="#fafafa" stroke="#bbb"/>
+  <text x="382" y="758" class="lblb">Wires</text>
+  <path d="M382,774 L416,774" class="w" marker-end="url(#arr)"/>
+  <text x="426" y="778" class="lbl">data</text>
+  <path d="M382,796 L416,796" class="bus"/>
+  <polygon points="416.0,796.0 407.0,801.0 407.0,791.0" fill="#666"/>
+  <text x="426" y="800" class="lbl">bus of several signals</text>
+  <path d="M382,818 L416,818" class="fwd" marker-end="url(#arr)"/>
+  <text x="426" y="822" class="lbl">forwarding path (ForwardAE / ForwardBE)</text>
+  <path d="M382,840 L416,840" class="hz" marker-end="url(#arr)"/>
+  <text x="426" y="844" class="lbl">hazard unit control</text>
+  <rect x="720" y="738" width="290" height="110" rx="6" fill="#fafafa" stroke="#bbb"/>
+  <text x="732" y="758" class="lblb">Boxes (green bars = stage registers)</text>
+  <rect x="732" y="765" width="34" height="16" rx="3" class="G"/>
+  <text x="776" y="778" class="lbl">reused as is</text>
+  <rect x="732" y="787" width="34" height="16" rx="3" class="B"/>
+  <text x="776" y="800" class="lbl">changed</text>
+  <rect x="732" y="809" width="34" height="16" rx="3" class="B new"/>
+  <text x="776" y="822" class="lbl">new</text>
+  <rect x="1030" y="738" width="330" height="110" rx="6" fill="#fafafa" stroke="#bbb"/>
+  <text x="1042" y="758" class="lblb">Contracts between the two pairs</text>
+  <circle cx="1059" cy="774" r="8" fill="#fff" stroke="#111" stroke-width="1.5"/>
+  <text x="1059" y="778" text-anchor="middle" style="font-size:11px;font-weight:bold;fill:#111">1</text>
+  <text x="1086" y="778" class="lbl">cache ↔ pipeline: MemBusyM stall</text>
+  <circle cx="1059" cy="796" r="8" fill="#fff" stroke="#111" stroke-width="1.5"/>
+  <text x="1059" y="800" text-anchor="middle" style="font-size:11px;font-weight:bold;fill:#111">2</text>
+  <text x="1086" y="800" class="lbl">predictor ↔ pipeline: Pred*, Update*</text>
+  <circle cx="1059" cy="818" r="8" fill="#fff" stroke="#111" stroke-width="1.5"/>
+  <text x="1059" y="822" text-anchor="middle" style="font-size:11px;font-weight:bold;fill:#111">3</text>
+  <text x="1086" y="822" class="lbl">hazard unit ↔ every stage</text>
+  <text x="20" y="880" class="lbl"><tspan font-weight="bold">Data</tspan> hazards: forward from MEM or WB into EX; a load followed by a use stalls one cycle.   <tspan font-weight="bold">Control</tspan> hazards: branches and jumps are decided in EX; wrong-path fetches are flushed.</text>
+  <text x="20" y="896" class="lbl"><tspan font-weight="bold">Memory</tspan> hazard: a cache miss raises MemBusyM and freezes IF, ID, EX and MEM until the line arrives.   Diagram wrong or out of date? Open a "Diagram error / change request" issue.</text>
+</svg>

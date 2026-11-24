@@ -1,0 +1,264 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 830" width="1280" height="830" font-family="Helvetica, Arial, sans-serif">
+  <title>Package C · Memory side, pc_top, then branch predictor</title>
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#333"/>
+    </marker>
+    <style>
+      .w   { stroke:#333; stroke-width:1.6; fill:none; }
+      .wt  { stroke:#333; stroke-width:1.1; fill:none; }
+      .bus { stroke:#666; stroke-width:3; fill:none; }
+      .fwd { stroke:#2e8b47; stroke-width:1.8; fill:none; stroke-dasharray:6 3; }
+      .hz  { stroke:#c46f12; stroke-width:1.6; fill:none; stroke-dasharray:3 3; }
+      .mem { stroke:#7a3fb0; stroke-width:1.8; fill:none; }
+      .lbl { font-size:11px; fill:#333; }
+      .lblb{ font-size:11px; fill:#333; font-weight:bold; }
+      .sig { font-size:10.5px; fill:#1f5fbf; font-style:italic; }
+      .ttl { font-size:14px; font-weight:bold; fill:#111; }
+      .ttl2{ font-size:12.5px; font-weight:bold; fill:#111; }
+      .sub { font-size:10.5px; fill:#555; }
+      .mono{ font-size:10.5px; fill:#222; font-family:DejaVu Sans Mono, Consolas, monospace; }
+      .A   { fill:#fde7cf; stroke:#c46f12; stroke-width:2.2; }
+      .B   { fill:#dcf2df; stroke:#2e8b47; stroke-width:2.2; }
+      .C   { fill:#dbe9fb; stroke:#2f6db5; stroke-width:2.2; }
+      .D   { fill:#efe3f8; stroke:#7a3fb0; stroke-width:2.2; }
+      .G   { fill:#eeeeee; stroke:#888; stroke-width:1.8; }
+      .new { stroke-dasharray:6 4; }
+      .band{ fill:#f6f8fb; stroke:none; }
+      .bt  { font-size:13px; font-weight:bold; fill:#fff; text-anchor:middle; }
+    </style>
+  </defs>
+  <rect width="1280" height="830" fill="#ffffff"/>
+  <text x="56" y="28" style="font-size:18px;font-weight:bold;fill:#111">Package C · Memory side, pc_top, then branch predictor</text>
+  <text x="56" y="46" class="sub">Cache pair (C + D) · C's work is tested by B · C writes the tests for A (hazard unit, hazard programs)</text>
+  <circle cx="32" cy="30" r="15" fill="#2f6db5"/>
+  <text x="32" y="35" class="bt">C</text>
+  <text x="20" y="78" class="ttl2">Memory side (Wed → Fri, built with D)</text>
+  <rect x="20" y="96" width="140" height="58" rx="4" class="G"/>
+  <text x="90.0" y="118" class="ttl" text-anchor="middle">MEM stage</text>
+  <text x="90.0" y="132" class="sub" text-anchor="middle">A, WD, funct3,</text>
+  <text x="90.0" y="145" class="sub" text-anchor="middle">MemRead, MemWrite</text>
+  <rect x="212" y="96" width="150" height="58" rx="4" class="D"/>
+  <text x="287.0" y="120" class="ttl" text-anchor="middle">Data cache core</text>
+  <text x="287.0" y="134" class="sub" text-anchor="middle">tags, data, LRU (D)</text>
+  <rect x="432" y="96" width="150" height="58" rx="4" class="C new"/>
+  <text x="507.0" y="120" class="ttl" text-anchor="middle">Refill controller</text>
+  <text x="507.0" y="134" class="sub" text-anchor="middle">miss → fill (C)</text>
+  <rect x="652" y="96" width="150" height="58" rx="4" class="C new"/>
+  <text x="727.0" y="120" class="ttl" text-anchor="middle">main_mem</text>
+  <text x="727.0" y="134" class="sub" text-anchor="middle">LATENCY cycles (C)</text>
+  <path d="M160,118 L212,118" class="w" marker-end="url(#arr)"/>
+  <path d="M212,134 L160,134" class="w" marker-end="url(#arr)"/>
+  <text x="164" y="112" class="sub">RD</text>
+  <text x="164" y="148" class="sub">MemBusy</text>
+  <path d="M362,118 L432,118" class="w" marker-end="url(#arr)"/>
+  <path d="M432,134 L362,134" class="w" marker-end="url(#arr)"/>
+  <text x="380" y="112" class="sub">miss</text>
+  <text x="380" y="148" class="sub">fill</text>
+  <path d="M582,118 L652,118" class="w" marker-end="url(#arr)"/>
+  <path d="M652,134 L582,134" class="w" marker-end="url(#arr)"/>
+  <text x="606" y="112" class="sub">req</text>
+  <text x="606" y="148" class="sub">line</text>
+  <text x="20" y="176" class="sub">Signals between cache core and controller (miss, missAddr, fillEn, fillWay, fillLine) and between controller and main_mem</text>
+  <text x="20" y="190" class="sub">(req, we, addr, wdata, ready, rline) are proposals: agree the exact names with D on Wed 25 and add them to interfaces.md.</text>
+  <text x="20" y="220" class="lblb">Refill controller states</text>
+  <rect x="20" y="234" width="150" height="46" rx="4" class="C"/>
+  <text x="95.0" y="254" class="ttl2" text-anchor="middle">IDLE</text>
+  <text x="95.0" y="268" class="sub" text-anchor="middle">MemBusy = 0</text>
+  <rect x="200" y="234" width="150" height="46" rx="4" class="C"/>
+  <text x="275.0" y="254" class="ttl2" text-anchor="middle">REQUEST</text>
+  <text x="275.0" y="268" class="sub" text-anchor="middle">MemBusy = 1</text>
+  <rect x="380" y="234" width="150" height="46" rx="4" class="C"/>
+  <text x="455.0" y="254" class="ttl2" text-anchor="middle">WAIT</text>
+  <text x="455.0" y="268" class="sub" text-anchor="middle">count LATENCY cycles</text>
+  <rect x="560" y="234" width="150" height="46" rx="4" class="C"/>
+  <text x="635.0" y="254" class="ttl2" text-anchor="middle">FILL</text>
+  <text x="635.0" y="268" class="sub" text-anchor="middle">write line, update LRU</text>
+  <path d="M170,257 L200,257" class="w" marker-end="url(#arr)"/>
+  <text x="185.0" y="250" class="sub" text-anchor="middle">miss</text>
+  <path d="M350,257 L380,257" class="w" marker-end="url(#arr)"/>
+  <text x="365.0" y="250" class="sub" text-anchor="middle">sent</text>
+  <path d="M530,257 L560,257" class="w" marker-end="url(#arr)"/>
+  <text x="545.0" y="250" class="sub" text-anchor="middle">ready</text>
+  <path d="M635,280 L635,304 L95,304 L95,280" class="w" marker-end="url(#arr)"/>
+  <text x="365" y="298" class="sub" text-anchor="middle">line written, access completes</text>
+  <text x="20" y="326" class="sub">Stores (write-through): send the write to main_mem; stall until it is accepted (decision D5, a 1-entry write buffer is the alternative).</text>
+  <line x1="20" y1="346" x2="860" y2="346" stroke="#ccd" stroke-width="1"/>
+  <text x="20" y="372" class="ttl2">branch_predictor.sv (Sat → Mon, then attach with A)</text>
+  <text x="20" y="394" class="lblb">Direct-mapped BTB, ENTRIES = 16 (default)</text>
+  <rect x="20" y="402" width="40" height="22" fill="#dbe9fb" stroke="#2f6db5" stroke-width="1.4"/>
+  <text x="40.0" y="417" class="lbl" text-anchor="middle">idx</text>
+  <rect x="60" y="402" width="50" height="22" fill="#dbe9fb" stroke="#2f6db5" stroke-width="1.4"/>
+  <text x="85.0" y="417" class="lbl" text-anchor="middle">valid</text>
+  <rect x="110" y="402" width="80" height="22" fill="#dbe9fb" stroke="#2f6db5" stroke-width="1.4"/>
+  <text x="150.0" y="417" class="lbl" text-anchor="middle">tag [26]</text>
+  <rect x="190" y="402" width="100" height="22" fill="#dbe9fb" stroke="#2f6db5" stroke-width="1.4"/>
+  <text x="240.0" y="417" class="lbl" text-anchor="middle">target [32]</text>
+  <rect x="290" y="402" width="60" height="22" fill="#dbe9fb" stroke="#2f6db5" stroke-width="1.4"/>
+  <text x="320.0" y="417" class="lbl" text-anchor="middle">cnt [2]</text>
+  <rect x="20" y="424" width="40" height="20" fill="#fff" stroke="#2f6db5" stroke-width="1"/>
+  <text x="40.0" y="438" class="lbl" text-anchor="middle">0</text>
+  <rect x="60" y="424" width="50" height="20" fill="#fff" stroke="#2f6db5" stroke-width="1"/>
+  <text x="85.0" y="438" class="lbl" text-anchor="middle">1</text>
+  <rect x="110" y="424" width="80" height="20" fill="#fff" stroke="#2f6db5" stroke-width="1"/>
+  <text x="150.0" y="438" class="lbl" text-anchor="middle">…</text>
+  <rect x="190" y="424" width="100" height="20" fill="#fff" stroke="#2f6db5" stroke-width="1"/>
+  <text x="240.0" y="438" class="lbl" text-anchor="middle">…</text>
+  <rect x="290" y="424" width="60" height="20" fill="#fff" stroke="#2f6db5" stroke-width="1"/>
+  <text x="320.0" y="438" class="lbl" text-anchor="middle">11</text>
+  <rect x="20" y="444" width="40" height="20" fill="#fff" stroke="#2f6db5" stroke-width="1"/>
+  <text x="40.0" y="458" class="lbl" text-anchor="middle">1</text>
+  <rect x="60" y="444" width="50" height="20" fill="#fff" stroke="#2f6db5" stroke-width="1"/>
+  <text x="85.0" y="458" class="lbl" text-anchor="middle">1</text>
+  <rect x="110" y="444" width="80" height="20" fill="#fff" stroke="#2f6db5" stroke-width="1"/>
+  <text x="150.0" y="458" class="lbl" text-anchor="middle">…</text>
+  <rect x="190" y="444" width="100" height="20" fill="#fff" stroke="#2f6db5" stroke-width="1"/>
+  <text x="240.0" y="458" class="lbl" text-anchor="middle">…</text>
+  <rect x="290" y="444" width="60" height="20" fill="#fff" stroke="#2f6db5" stroke-width="1"/>
+  <text x="320.0" y="458" class="lbl" text-anchor="middle">10</text>
+  <rect x="20" y="464" width="40" height="20" fill="#fff" stroke="#2f6db5" stroke-width="1"/>
+  <text x="40.0" y="478" class="lbl" text-anchor="middle">2</text>
+  <rect x="60" y="464" width="50" height="20" fill="#fff" stroke="#2f6db5" stroke-width="1"/>
+  <text x="85.0" y="478" class="lbl" text-anchor="middle">1</text>
+  <rect x="110" y="464" width="80" height="20" fill="#fff" stroke="#2f6db5" stroke-width="1"/>
+  <text x="150.0" y="478" class="lbl" text-anchor="middle">…</text>
+  <rect x="190" y="464" width="100" height="20" fill="#fff" stroke="#2f6db5" stroke-width="1"/>
+  <text x="240.0" y="478" class="lbl" text-anchor="middle">…</text>
+  <rect x="290" y="464" width="60" height="20" fill="#fff" stroke="#2f6db5" stroke-width="1"/>
+  <text x="320.0" y="478" class="lbl" text-anchor="middle">01</text>
+  <rect x="20" y="484" width="40" height="20" fill="#fff" stroke="#2f6db5" stroke-width="1"/>
+  <text x="40.0" y="498" class="lbl" text-anchor="middle">3</text>
+  <rect x="60" y="484" width="50" height="20" fill="#fff" stroke="#2f6db5" stroke-width="1"/>
+  <text x="85.0" y="498" class="lbl" text-anchor="middle">0</text>
+  <rect x="110" y="484" width="80" height="20" fill="#fff" stroke="#2f6db5" stroke-width="1"/>
+  <text x="150.0" y="498" class="lbl" text-anchor="middle"></text>
+  <rect x="190" y="484" width="100" height="20" fill="#fff" stroke="#2f6db5" stroke-width="1"/>
+  <text x="240.0" y="498" class="lbl" text-anchor="middle"></text>
+  <rect x="290" y="484" width="60" height="20" fill="#fff" stroke="#2f6db5" stroke-width="1"/>
+  <text x="320.0" y="498" class="lbl" text-anchor="middle"></text>
+  <text x="20" y="520" class="sub">…  (ENTRIES rows)</text>
+  <text x="20" y="546" class="mono">idx = PCF[5:2]          tag = PCF[31:6]</text>
+  <text x="20" y="562" class="mono">hit = valid[idx] &amp; (tag[idx] == PCF[31:6])</text>
+  <text x="20" y="578" class="mono">PredTakenF  = hit &amp; cnt[idx][1]</text>
+  <text x="20" y="594" class="mono">PredTargetF = target[idx]</text>
+  <text x="20" y="622" class="sub">Ports: PCF, UpdateEn, UpdatePC, UpdateTaken,</text>
+  <text x="20" y="636" class="sub">UpdateTarget  →  PredTakenF, PredTargetF</text>
+  <text x="20" y="650" class="sub">jalr is not predicted (UpdateEn = BranchE | JumpE).</text>
+  <text x="450" y="394" class="lblb">2-bit counter per entry</text>
+  <circle cx="480" cy="460" r="26" fill="#dbe9fb" stroke="#2f6db5" stroke-width="2"/>
+  <text x="480" y="459" class="ttl2" text-anchor="middle">00</text>
+  <text x="480" y="472" class="sub" text-anchor="middle">NT</text>
+  <text x="480" y="506" class="sub" text-anchor="middle">strongly</text>
+  <text x="480" y="518" class="sub" text-anchor="middle">not taken</text>
+  <circle cx="590" cy="460" r="26" fill="#dbe9fb" stroke="#2f6db5" stroke-width="2"/>
+  <text x="590" y="459" class="ttl2" text-anchor="middle">01</text>
+  <text x="590" y="472" class="sub" text-anchor="middle">NT</text>
+  <text x="590" y="506" class="sub" text-anchor="middle">weakly</text>
+  <text x="590" y="518" class="sub" text-anchor="middle">not taken</text>
+  <circle cx="700" cy="460" r="26" fill="#dbe9fb" stroke="#2f6db5" stroke-width="2"/>
+  <text x="700" y="459" class="ttl2" text-anchor="middle">10</text>
+  <text x="700" y="472" class="sub" text-anchor="middle">T</text>
+  <text x="700" y="506" class="sub" text-anchor="middle">weakly</text>
+  <text x="700" y="518" class="sub" text-anchor="middle">taken</text>
+  <circle cx="810" cy="460" r="26" fill="#dbe9fb" stroke="#2f6db5" stroke-width="2"/>
+  <text x="810" y="459" class="ttl2" text-anchor="middle">11</text>
+  <text x="810" y="472" class="sub" text-anchor="middle">T</text>
+  <text x="810" y="506" class="sub" text-anchor="middle">strongly</text>
+  <text x="810" y="518" class="sub" text-anchor="middle">taken</text>
+  <path d="M505,452 L565,452" class="w" marker-end="url(#arr)"/>
+  <path d="M565,468 L505,468" class="w" marker-end="url(#arr)"/>
+  <text x="535.0" y="446" class="sub" text-anchor="middle">taken</text>
+  <text x="535.0" y="486" class="sub" text-anchor="middle">not taken</text>
+  <path d="M615,452 L675,452" class="w" marker-end="url(#arr)"/>
+  <path d="M675,468 L615,468" class="w" marker-end="url(#arr)"/>
+  <text x="645.0" y="446" class="sub" text-anchor="middle">taken</text>
+  <text x="645.0" y="486" class="sub" text-anchor="middle">not taken</text>
+  <path d="M725,452 L785,452" class="w" marker-end="url(#arr)"/>
+  <path d="M785,468 L725,468" class="w" marker-end="url(#arr)"/>
+  <text x="755.0" y="446" class="sub" text-anchor="middle">taken</text>
+  <text x="755.0" y="486" class="sub" text-anchor="middle">not taken</text>
+  <text x="450" y="556" class="lbl">On UpdateEn and a hit: counter moves one step</text>
+  <text x="450" y="571" class="lbl">towards taken or not taken (saturates).</text>
+  <text x="450" y="586" class="lbl">Miss and taken: allocate the entry with</text>
+  <text x="450" y="601" class="lbl">counter = 10 (weakly taken).</text>
+  <text x="450" y="616" class="lbl">Predict taken only when counter is 10 or 11.</text>
+  <text x="450" y="631" class="lbl">Stub first: PredTakenF = 0 (predict not taken),</text>
+  <text x="450" y="646" class="lbl">so the pipeline can be finished without it.</text>
+  <line x1="20" y1="684" x2="860" y2="684" stroke="#ccd" stroke-width="1"/>
+  <text x="20" y="706" class="ttl2">pc_top.sv rework (Wed → Thu, tested by B)</text>
+  <rect x="20" y="716" width="410" height="100" rx="6" fill="#ffffff" stroke="#2f6db5" stroke-width="1.6"/>
+  <rect x="20" y="716" width="410" height="22" rx="6" fill="#dbe9fb"/>
+  <rect x="20" y="728" width="410" height="10" fill="#dbe9fb"/>
+  <text x="30" y="732" class="ttl2">New ports</text>
+  <text x="30" y="750" class="lbl">in: clk, rst (reset 0xBFC00000), en (= ~StallF, PC holds when 0),</text>
+  <text x="30" y="765" class="lbl">     Mispredict, RedirectPC [32], PredTaken, PredTarget [32]</text>
+  <text x="30" y="780" class="lbl">out: PC, PCPlus4</text>
+  <rect x="440" y="716" width="420" height="100" rx="6" fill="#ffffff" stroke="#2f6db5" stroke-width="1.6"/>
+  <rect x="440" y="716" width="420" height="22" rx="6" fill="#dbe9fb"/>
+  <rect x="440" y="728" width="420" height="10" fill="#dbe9fb"/>
+  <text x="450" y="732" class="ttl2">Removed</text>
+  <text x="450" y="750" class="lbl">PCSrc, ImmExt, ALUResult, PCTarget: the PCTargetE adder</text>
+  <text x="450" y="765" class="lbl">moves to EX (B) and the jalr target joins RedirectPCE.</text>
+  <text x="450" y="780" class="lbl">Next PC: Mispredict, then PredTaken, else PCPlus4.</text>
+  <text x="910" y="76" class="lblb">Where it sits</text>
+  <rect x="910" y="84" width="40" height="52" rx="3" fill="#f1f3f6" stroke="#c9ced6"/>
+  <text x="930" y="147" class="sub" text-anchor="middle">IF</text>
+  <rect x="956" y="84" width="40" height="52" rx="3" fill="#f1f3f6" stroke="#c9ced6"/>
+  <text x="976" y="147" class="sub" text-anchor="middle">ID</text>
+  <rect x="1002" y="84" width="40" height="52" rx="3" fill="#f1f3f6" stroke="#c9ced6"/>
+  <text x="1022" y="147" class="sub" text-anchor="middle">EX</text>
+  <rect x="1048" y="84" width="40" height="52" rx="3" fill="#f1f3f6" stroke="#c9ced6"/>
+  <text x="1068" y="147" class="sub" text-anchor="middle">MEM</text>
+  <rect x="1094" y="84" width="40" height="52" rx="3" fill="#f1f3f6" stroke="#c9ced6"/>
+  <text x="1114" y="147" class="sub" text-anchor="middle">WB</text>
+  <rect x="914" y="88" width="32" height="14" rx="2" fill="#2f6db5" opacity="0.85"/>
+  <rect x="914" y="108" width="32" height="14" rx="2" fill="#2f6db5" opacity="0.85"/>
+  <rect x="1052" y="114" width="32" height="14" rx="2" fill="#2f6db5" opacity="0.85"/>
+  <rect x="900" y="176" width="360" height="533" rx="8" fill="#fbfbfb" stroke="#2f6db5" stroke-width="1.6"/>
+  <rect x="910" y="185" width="340" height="22" rx="4" fill="#dbe9fb"/>
+  <text x="918" y="200" class="ttl2">You build</text>
+  <text x="918" y="222" class="lblb">1.</text>
+  <text x="936" y="222" class="lbl">main_mem.sv: LATENCY parameter, 16-byte line reads,</text>
+  <text x="936" y="237" class="lbl">writes, data.hex preload at 0x10000</text>
+  <text x="918" y="252" class="lblb">2.</text>
+  <text x="936" y="252" class="lbl">Refill controller with D (miss → fill → MemBusy)</text>
+  <text x="918" y="267" class="lblb">3.</text>
+  <text x="936" y="267" class="lbl">pc_top.sv rework: enable, 3-way next PC</text>
+  <text x="918" y="282" class="lblb">4.</text>
+  <text x="936" y="282" class="lbl">branch_predictor.sv: 16-entry BTB + 2-bit counters,</text>
+  <text x="936" y="297" class="lbl">a stub with PredTakenF = 0 first</text>
+  <text x="918" y="312" class="sub">Mon 30 → Wed 2: attach the predictor with A;</text>
+  <text x="918" y="327" class="sub">sweep ENTRIES for the evidence</text>
+  <rect x="910" y="339" width="340" height="22" rx="4" fill="#dbe9fb"/>
+  <text x="918" y="354" class="ttl2">Done when</text>
+  <text x="918" y="376" class="lbl">•</text>
+  <text x="934" y="376" class="lbl">main_mem, pc_top and predictor tests pass</text>
+  <text x="936" y="391" class="lbl">(B writes them)</text>
+  <text x="918" y="406" class="lbl">•</text>
+  <text x="934" y="406" class="lbl">loop benchmark: fewer cycles than predict-not-taken</text>
+  <text x="918" y="421" class="lbl">•</text>
+  <text x="934" y="421" class="lbl">all 42 tests still pass with the predictor on</text>
+  <rect x="910" y="433" width="340" height="22" rx="4" fill="#dbe9fb"/>
+  <text x="918" y="448" class="ttl2">You write the tests for A</text>
+  <text x="918" y="470" class="lbl">•</text>
+  <text x="934" y="470" class="lbl">hazard_unit_tb: forward, load-use, flush, memory</text>
+  <text x="936" y="485" class="lbl">stall, and the priority order</text>
+  <text x="918" y="500" class="lbl">•</text>
+  <text x="934" y="500" class="lbl">asm/hazard_*.s run by tests/top-hazards_tb.cpp:</text>
+  <text x="936" y="515" class="lbl">back-to-back, 2 apart, load-use, load then store,</text>
+  <text x="936" y="530" class="lbl">ALU then bne, load then bne, shadow of a taken</text>
+  <text x="936" y="545" class="lbl">branch, jal / jalr flush, writes to x0</text>
+  <rect x="910" y="557" width="340" height="22" rx="4" fill="#dbe9fb"/>
+  <text x="918" y="572" class="ttl2">Talks to</text>
+  <text x="918" y="594" class="lbl">•</text>
+  <text x="934" y="594" class="lbl">D: refill interface (agree on Wed 25)</text>
+  <text x="918" y="609" class="lbl">•</text>
+  <text x="934" y="609" class="lbl">A: MispredictE, Update*, Pred* slots</text>
+  <text x="918" y="624" class="lbl">•</text>
+  <text x="934" y="624" class="lbl">B: pc_top ports, Pred* in IF/ID and ID/EX</text>
+  <rect x="910" y="636" width="340" height="22" rx="4" fill="#dbe9fb"/>
+  <text x="918" y="651" class="ttl2">If Gate 1 slips</text>
+  <text x="918" y="673" class="lbl">•</text>
+  <text x="934" y="673" class="lbl">Mon 30: the cache pair (C + D) joins the pipeline</text>
+  <text x="936" y="688" class="lbl">debugging. Gate 1 (Sun 29) is the date to hit.</text>
+</svg>

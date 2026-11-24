@@ -1,0 +1,207 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 800" width="1280" height="800" font-family="Helvetica, Arial, sans-serif">
+  <title>Package D · Data cache and benchmarks</title>
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#333"/>
+    </marker>
+    <style>
+      .w   { stroke:#333; stroke-width:1.6; fill:none; }
+      .wt  { stroke:#333; stroke-width:1.1; fill:none; }
+      .bus { stroke:#666; stroke-width:3; fill:none; }
+      .fwd { stroke:#2e8b47; stroke-width:1.8; fill:none; stroke-dasharray:6 3; }
+      .hz  { stroke:#c46f12; stroke-width:1.6; fill:none; stroke-dasharray:3 3; }
+      .mem { stroke:#7a3fb0; stroke-width:1.8; fill:none; }
+      .lbl { font-size:11px; fill:#333; }
+      .lblb{ font-size:11px; fill:#333; font-weight:bold; }
+      .sig { font-size:10.5px; fill:#1f5fbf; font-style:italic; }
+      .ttl { font-size:14px; font-weight:bold; fill:#111; }
+      .ttl2{ font-size:12.5px; font-weight:bold; fill:#111; }
+      .sub { font-size:10.5px; fill:#555; }
+      .mono{ font-size:10.5px; fill:#222; font-family:DejaVu Sans Mono, Consolas, monospace; }
+      .A   { fill:#fde7cf; stroke:#c46f12; stroke-width:2.2; }
+      .B   { fill:#dcf2df; stroke:#2e8b47; stroke-width:2.2; }
+      .C   { fill:#dbe9fb; stroke:#2f6db5; stroke-width:2.2; }
+      .D   { fill:#efe3f8; stroke:#7a3fb0; stroke-width:2.2; }
+      .G   { fill:#eeeeee; stroke:#888; stroke-width:1.8; }
+      .new { stroke-dasharray:6 4; }
+      .band{ fill:#f6f8fb; stroke:none; }
+      .bt  { font-size:13px; font-weight:bold; fill:#fff; text-anchor:middle; }
+    </style>
+  </defs>
+  <rect width="1280" height="800" fill="#ffffff"/>
+  <text x="56" y="28" style="font-size:18px;font-weight:bold;fill:#111">Package D · Data cache and benchmarks</text>
+  <text x="56" y="46" class="sub">Cache pair (C + D) · D's work is tested by A · D writes the tests for B (stage registers, forwarding)</text>
+  <circle cx="32" cy="30" r="15" fill="#7a3fb0"/>
+  <text x="32" y="35" class="bt">D</text>
+  <text x="20" y="78" class="ttl2">data_cache.sv: one access, top to bottom</text>
+  <rect x="20" y="90" width="154" height="24" fill="#efe3f8" stroke="#7a3fb0" stroke-width="1.6"/>
+  <rect x="174" y="90" width="132" height="24" fill="#efe3f8" stroke="#7a3fb0" stroke-width="1.6"/>
+  <rect x="306" y="90" width="88" height="24" fill="#efe3f8" stroke="#7a3fb0" stroke-width="1.6"/>
+  <text x="97" y="106" class="lbl" text-anchor="middle">tag  A[16:10]</text>
+  <text x="240" y="106" class="lbl" text-anchor="middle">index  A[9:4]</text>
+  <text x="350" y="106" class="lbl" text-anchor="middle">offset  A[3:0]</text>
+  <text x="404" y="106" class="sub">only A[16:0], like data_mem</text>
+  <rect x="20" y="150" width="180" height="66" rx="4" class="D"/>
+  <text x="110.0" y="170" class="ttl2" text-anchor="middle">Way 0</text>
+  <text x="110.0" y="184" class="sub" text-anchor="middle">valid + tag: 64 × 8 b</text>
+  <text x="110.0" y="197" class="sub" text-anchor="middle">data: 64 × 16 B</text>
+  <rect x="230" y="150" width="180" height="66" rx="4" class="D"/>
+  <text x="320.0" y="170" class="ttl2" text-anchor="middle">Way 1</text>
+  <text x="320.0" y="184" class="sub" text-anchor="middle">valid + tag: 64 × 8 b</text>
+  <text x="320.0" y="197" class="sub" text-anchor="middle">data: 64 × 16 B</text>
+  <path d="M240,114 L240,132 L110,132 L110,150" class="w" marker-end="url(#arr)"/>
+  <path d="M240,132 L320,132 L320,150" class="w" marker-end="url(#arr)"/>
+  <text x="250" y="128" class="sub">index selects the set</text>
+  <rect x="20" y="244" width="180" height="30" rx="4" class="D"/>
+  <text x="110.0" y="264" class="lbl" text-anchor="middle">tag == ?   → hit0</text>
+  <rect x="230" y="244" width="180" height="30" rx="4" class="D"/>
+  <text x="320.0" y="264" class="lbl" text-anchor="middle">tag == ?   → hit1</text>
+  <path d="M110,216 L110,244" class="w" marker-end="url(#arr)"/>
+  <path d="M320,216 L320,244" class="w" marker-end="url(#arr)"/>
+  <path d="M60,114 L60,128 L8,128 L8,230 L150,230 L150,244" class="w" marker-end="url(#arr)"/>
+  <path d="M150,230 L360,230 L360,244" class="w" marker-end="url(#arr)"/>
+  <text x="14" y="224" class="sub">tag</text>
+  <rect x="120" y="300" width="200" height="30" rx="4" class="D"/>
+  <text x="220.0" y="320" class="lbl" text-anchor="middle">hit = hit0 | hit1</text>
+  <path d="M110,274 L110,288 L190,288 L190,300" class="w" marker-end="url(#arr)"/>
+  <path d="M320,274 L320,288 L250,288 L250,300" class="w" marker-end="url(#arr)"/>
+  <rect x="20" y="352" width="390" height="30" rx="4" class="D"/>
+  <text x="215.0" y="372" class="lbl" text-anchor="middle">way mux: pick the 128-bit line of the hit way</text>
+  <path d="M220,330 L220,352" class="w" marker-end="url(#arr)"/>
+  <rect x="20" y="400" width="390" height="30" rx="4" class="D"/>
+  <text x="215.0" y="420" class="lbl" text-anchor="middle">word select: offset[3:2]</text>
+  <path d="M215,382 L215,400" class="w" marker-end="url(#arr)"/>
+  <rect x="20" y="448" width="390" height="30" rx="4" class="D"/>
+  <text x="215.0" y="468" class="lbl" text-anchor="middle">byte / half / word + sign: funct3, offset[1:0]</text>
+  <path d="M215,430 L215,448" class="w" marker-end="url(#arr)"/>
+  <path d="M410,463 L470,463" class="w" marker-end="url(#arr)"/>
+  <text x="476" y="467" class="lblb">RD  →  ReadDataM</text>
+  <rect x="450" y="150" width="180" height="66" rx="4" class="D"/>
+  <text x="540.0" y="172" class="ttl2" text-anchor="middle">LRU</text>
+  <text x="540.0" y="186" class="sub" text-anchor="middle">1 bit per set (2-way)</text>
+  <text x="540.0" y="199" class="sub" text-anchor="middle">updated on hit and on fill</text>
+  <rect x="450" y="244" width="180" height="86" rx="4" class="D"/>
+  <text x="540.0" y="266" class="ttl2" text-anchor="middle">MemBusy</text>
+  <text x="540.0" y="280" class="sub" text-anchor="middle">load hit: 0</text>
+  <text x="540.0" y="293" class="sub" text-anchor="middle">load miss: 1 until the line is in</text>
+  <text x="540.0" y="306" class="sub" text-anchor="middle">store: per decision D5</text>
+  <text x="450" y="350" class="sub">No MemRead and no MemWrite:</text>
+  <text x="450" y="363" class="sub">never busy.</text>
+  <rect x="660" y="84" width="220" height="396" rx="6" fill="#ffffff" stroke="#7a3fb0" stroke-width="1.6"/>
+  <rect x="660" y="84" width="220" height="22" rx="6" fill="#efe3f8"/>
+  <rect x="660" y="96" width="220" height="10" fill="#efe3f8"/>
+  <text x="670" y="100" class="ttl2">Defaults (decide D4 to D6)</text>
+  <text x="672" y="128" class="lblb">Geometry</text>
+  <text x="672" y="145" class="lbl">  2-way, 16 B lines,</text>
+  <text x="672" y="162" class="lbl">  64 sets (2 KB)</text>
+  <text x="672" y="179" class="lblb">Parameters</text>
+  <text x="672" y="196" class="lbl">  SETS, WAYS, LINE_BYTES</text>
+  <text x="672" y="213" class="lblb">Replacement</text>
+  <text x="672" y="230" class="lbl">  LRU</text>
+  <text x="672" y="247" class="lblb">Load hit</text>
+  <text x="672" y="264" class="lbl">  RD this cycle, no stall</text>
+  <text x="672" y="281" class="lblb">Load miss</text>
+  <text x="672" y="298" class="lbl">  MemBusy until filled</text>
+  <text x="672" y="315" class="lblb">Store hit</text>
+  <text x="672" y="332" class="lbl">  update line + write through</text>
+  <text x="672" y="349" class="lblb">Store miss</text>
+  <text x="672" y="366" class="lbl">  write memory, no allocate</text>
+  <text x="672" y="383" class="lblb">rst</text>
+  <text x="672" y="400" class="lbl">  invalidates every line</text>
+  <text x="672" y="417" class="lblb">data_mem.sv</text>
+  <text x="672" y="434" class="lbl">  stays as the reference</text>
+  <line x1="20" y1="504" x2="860" y2="504" stroke="#ccd" stroke-width="1"/>
+  <text x="20" y="530" class="ttl2">Benchmark harness (Mon 30 → Wed 2): cycles until a0 first holds its final value</text>
+  <rect x="20" y="542" width="300" height="22" fill="#efe3f8" stroke="#7a3fb0" stroke-width="1.4"/>
+  <text x="28" y="557" class="lblb">Configuration</text>
+  <rect x="320" y="542" width="160" height="22" fill="#efe3f8" stroke="#7a3fb0" stroke-width="1.4"/>
+  <text x="328" y="557" class="lblb">1_addi_bne</text>
+  <rect x="480" y="542" width="180" height="22" fill="#efe3f8" stroke="#7a3fb0" stroke-width="1.4"/>
+  <text x="488" y="557" class="lblb">5_pdf gaussian</text>
+  <rect x="660" y="542" width="180" height="22" fill="#efe3f8" stroke="#7a3fb0" stroke-width="1.4"/>
+  <text x="668" y="557" class="lblb">5_pdf triangle</text>
+  <rect x="20" y="564" width="300" height="22" fill="#fff" stroke="#7a3fb0" stroke-width="1"/>
+  <text x="28" y="579" class="lbl">Single-cycle (cycles = instructions)</text>
+  <rect x="320" y="564" width="160" height="22" fill="#fff" stroke="#7a3fb0" stroke-width="1"/>
+  <rect x="480" y="564" width="180" height="22" fill="#fff" stroke="#7a3fb0" stroke-width="1"/>
+  <rect x="660" y="564" width="180" height="22" fill="#fff" stroke="#7a3fb0" stroke-width="1"/>
+  <rect x="20" y="586" width="300" height="22" fill="#fff" stroke="#7a3fb0" stroke-width="1"/>
+  <text x="28" y="601" class="lbl">Pipeline, zero-latency memory</text>
+  <rect x="320" y="586" width="160" height="22" fill="#fff" stroke="#7a3fb0" stroke-width="1"/>
+  <rect x="480" y="586" width="180" height="22" fill="#fff" stroke="#7a3fb0" stroke-width="1"/>
+  <rect x="660" y="586" width="180" height="22" fill="#fff" stroke="#7a3fb0" stroke-width="1"/>
+  <rect x="20" y="608" width="300" height="22" fill="#fff" stroke="#7a3fb0" stroke-width="1"/>
+  <text x="28" y="623" class="lbl">Pipeline, slow memory, no cache</text>
+  <rect x="320" y="608" width="160" height="22" fill="#fff" stroke="#7a3fb0" stroke-width="1"/>
+  <rect x="480" y="608" width="180" height="22" fill="#fff" stroke="#7a3fb0" stroke-width="1"/>
+  <rect x="660" y="608" width="180" height="22" fill="#fff" stroke="#7a3fb0" stroke-width="1"/>
+  <rect x="20" y="630" width="300" height="22" fill="#fff" stroke="#7a3fb0" stroke-width="1"/>
+  <text x="28" y="645" class="lbl">Pipeline, slow memory, with cache</text>
+  <rect x="320" y="630" width="160" height="22" fill="#fff" stroke="#7a3fb0" stroke-width="1"/>
+  <rect x="480" y="630" width="180" height="22" fill="#fff" stroke="#7a3fb0" stroke-width="1"/>
+  <rect x="660" y="630" width="180" height="22" fill="#fff" stroke="#7a3fb0" stroke-width="1"/>
+  <rect x="20" y="652" width="300" height="22" fill="#fff" stroke="#7a3fb0" stroke-width="1"/>
+  <text x="28" y="667" class="lbl">+ branch predictor</text>
+  <rect x="320" y="652" width="160" height="22" fill="#fff" stroke="#7a3fb0" stroke-width="1"/>
+  <rect x="480" y="652" width="180" height="22" fill="#fff" stroke="#7a3fb0" stroke-width="1"/>
+  <rect x="660" y="652" width="180" height="22" fill="#fff" stroke="#7a3fb0" stroke-width="1"/>
+  <text x="20" y="694" class="lbl">The single-cycle CPU does one instruction per cycle, so its cycle count is the instruction count: CPI of any row = its cycles ÷ that row.</text>
+  <text x="20" y="710" class="lbl">Also record cache hit rate, mispredict count, and the same table at LATENCY 6 and 12.</text>
+  <text x="20" y="726" class="sub">The 42 tests only check the final a0 after a fixed number of cycles, so they cannot measure speed. This harness does.</text>
+  <text x="910" y="76" class="lblb">Where it sits</text>
+  <rect x="910" y="84" width="40" height="52" rx="3" fill="#f1f3f6" stroke="#c9ced6"/>
+  <text x="930" y="147" class="sub" text-anchor="middle">IF</text>
+  <rect x="956" y="84" width="40" height="52" rx="3" fill="#f1f3f6" stroke="#c9ced6"/>
+  <text x="976" y="147" class="sub" text-anchor="middle">ID</text>
+  <rect x="1002" y="84" width="40" height="52" rx="3" fill="#f1f3f6" stroke="#c9ced6"/>
+  <text x="1022" y="147" class="sub" text-anchor="middle">EX</text>
+  <rect x="1048" y="84" width="40" height="52" rx="3" fill="#f1f3f6" stroke="#c9ced6"/>
+  <text x="1068" y="147" class="sub" text-anchor="middle">MEM</text>
+  <rect x="1094" y="84" width="40" height="52" rx="3" fill="#f1f3f6" stroke="#c9ced6"/>
+  <text x="1114" y="147" class="sub" text-anchor="middle">WB</text>
+  <rect x="1052" y="98" width="32" height="22" rx="2" fill="#7a3fb0" opacity="0.85"/>
+  <rect x="900" y="176" width="360" height="488" rx="8" fill="#fbfbfb" stroke="#7a3fb0" stroke-width="1.6"/>
+  <rect x="910" y="185" width="340" height="22" rx="4" fill="#efe3f8"/>
+  <text x="918" y="200" class="ttl2">You build</text>
+  <text x="918" y="222" class="lblb">1.</text>
+  <text x="936" y="222" class="lbl">data_cache.sv: tag, valid and data arrays, 2-way</text>
+  <text x="936" y="237" class="lbl">lookup, LRU, load size and sign via funct3</text>
+  <text x="918" y="252" class="lblb">2.</text>
+  <text x="936" y="252" class="lbl">Write-through, no-write-allocate; rst invalidates</text>
+  <text x="918" y="267" class="lblb">3.</text>
+  <text x="936" y="267" class="lbl">MemBusy exactly as in interfaces.md section 5</text>
+  <text x="918" y="282" class="sub">Mon 30 → Wed 2: plug into the pipeline with B,</text>
+  <text x="918" y="297" class="sub">benchmark harness and evidence table.</text>
+  <text x="918" y="312" class="sub">Before anything merges: tag single-cycle-v1</text>
+  <rect x="910" y="324" width="340" height="22" rx="4" fill="#efe3f8"/>
+  <text x="918" y="339" class="ttl2">Done when</text>
+  <text x="918" y="361" class="lbl">•</text>
+  <text x="934" y="361" class="lbl">cache tests pass (A writes them)</text>
+  <text x="918" y="376" class="lbl">•</text>
+  <text x="934" y="376" class="lbl">42 tests pass with cache + slow memory</text>
+  <text x="918" y="391" class="lbl">•</text>
+  <text x="934" y="391" class="lbl">benchmark table filled in</text>
+  <rect x="910" y="403" width="340" height="22" rx="4" fill="#efe3f8"/>
+  <text x="918" y="418" class="ttl2">You write the tests for B</text>
+  <text x="918" y="440" class="lbl">•</text>
+  <text x="934" y="440" class="lbl">each stage register holds when en = 0 and</text>
+  <text x="936" y="455" class="lbl">bubbles on clr</text>
+  <text x="918" y="470" class="lbl">•</text>
+  <text x="934" y="470" class="lbl">forwarding picks the newest value; x0 never</text>
+  <text x="936" y="485" class="lbl">forwarded</text>
+  <text x="918" y="500" class="lbl">•</text>
+  <text x="934" y="500" class="lbl">regfile returns a same-cycle write</text>
+  <rect x="910" y="512" width="340" height="22" rx="4" fill="#efe3f8"/>
+  <text x="918" y="527" class="ttl2">Talks to</text>
+  <text x="918" y="549" class="lbl">•</text>
+  <text x="934" y="549" class="lbl">C: refill interface (agree on Wed 25)</text>
+  <text x="918" y="564" class="lbl">•</text>
+  <text x="934" y="564" class="lbl">B: MEM-stage ports in top.sv</text>
+  <text x="918" y="579" class="lbl">•</text>
+  <text x="934" y="579" class="lbl">A: MemBusy into the hazard unit</text>
+  <rect x="910" y="591" width="340" height="22" rx="4" fill="#efe3f8"/>
+  <text x="918" y="606" class="ttl2">If Gate 1 slips</text>
+  <text x="918" y="628" class="lbl">•</text>
+  <text x="934" y="628" class="lbl">Mon 30: the cache pair (C + D) joins the pipeline</text>
+  <text x="936" y="643" class="lbl">debugging. Gate 1 (Sun 29) is the date to hit.</text>
+</svg>

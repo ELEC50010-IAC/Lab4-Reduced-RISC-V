@@ -12,6 +12,10 @@ body:
         - Architecture / roadmap (docs/plan/architecture.svg)
         - Datapath (docs/plan/datapath.svg)
         - Plan README (docs/plan/README.md)
+        - Phase 2 pipeline (docs/plan/phase2/pipeline.svg)
+        - Phase 2 package A, B, C or D (docs/plan/phase2/package-*.svg)
+        - Phase 2 timeline (docs/plan/phase2/timeline.svg)
+        - Phase 2 plan README or interfaces (docs/plan/phase2/)
     validations:
       required: true
   - type: dropdown
