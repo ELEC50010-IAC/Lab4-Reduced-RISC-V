@@ -304,6 +304,42 @@ TEST_F(CpuTestbench, BgeuTest)
     EXPECT_EQ(top_->a0, 1u);
 }
 
+// jal: jumps and saves PC + 4, a0 = return address 0xBFC00004
+TEST_F(CpuTestbench, JalTest)
+{
+    setupTest("jal");
+    initSimulation();
+    runSimulation(CYCLES);
+    EXPECT_EQ(top_->a0, 0xBFC00004u);
+}
+
+// jalr: jumps to register + offset and saves PC + 4, a0 = 0xBFC00008
+TEST_F(CpuTestbench, JalrTest)
+{
+    setupTest("jalr");
+    initSimulation();
+    runSimulation(CYCLES);
+    EXPECT_EQ(top_->a0, 0xBFC00008u);
+}
+
+// lui: 0x12345 << 12 = 0x12345000
+TEST_F(CpuTestbench, LuiTest)
+{
+    setupTest("lui");
+    initSimulation();
+    runSimulation(CYCLES);
+    EXPECT_EQ(top_->a0, 0x12345000u);
+}
+
+// auipc: PC + (1 << 12) = 0xBFC00000 + 0x1000 = 0xBFC01000
+TEST_F(CpuTestbench, AuipcTest)
+{
+    setupTest("auipc");
+    initSimulation();
+    runSimulation(CYCLES);
+    EXPECT_EQ(top_->a0, 0xBFC01000u);
+}
+
 int main(int argc, char **argv)
 {
     testing::InitGoogleTest(&argc, argv);
