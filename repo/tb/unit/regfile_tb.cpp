@@ -51,32 +51,34 @@ TEST_F(RegfileTestbench, WriteDisabledTest)
     top->WE3 = 1;                  // control: now enable the write
     runSimulation(1);
 
-    EXPECT_EQ(top->RD1, 10);        // the write should have happened this time
+    EXPECT_EQ(top->RD1, 10u);        // the write should have happened this time
 }
 
 TEST_F(RegfileTestbench, X0StaysZeroTest)
 {
     top->A3 = 0;
-    top->WD3 = 10;
+    top->WD3 = 0xFFFFEEEE;
     top->WE3 = 1;
 
     runSimulation(1);
 
     top->A1 = 0;
+    top->A2 = 0;
     top->eval();
-    EXPECT_EQ(top->RD1, 0);
+    EXPECT_EQ(top->RD1, 0u);
+    EXPECT_EQ(top->RD2, 0u);
 
 }
 
 TEST_F(RegfileTestbench, A0OutputTest)
 {
     top->A3 = 10;
-    top->WD3 = (top->a0 > 0) ? 0 : 1;
+    top->WD3 = 0xFFFFEEEE;
     top->WE3 = 1;
     
     runSimulation(1);
 
-    EXPECT_EQ(top->WD3, top->a0);
+    EXPECT_EQ(top->a0, 0xFFFFEEEEu);
 
 }
 
@@ -167,6 +169,49 @@ TEST_F(RegfileTestbench, A0OnlyShowsX10Test)
     EXPECT_EQ(top->a0, 0x12345678u);
 }
 
+// check if all the register values at the start are initialised to 0
+TEST_F(RegfileTestbench, AllZeroAtStart)
+{
+    for(unsigned int i = 0; i < 32; i++){
+        top->A1 = i;
+        top->A2 = i;
+        top->eval();
+        EXPECT_EQ(top->RD1, 0u);
+        EXPECT_EQ(top->RD2, 0u);
+    }
+}
+
+// writing the same register twice: the second value replaces the first
+TEST_F(RegfileTestbench, Overwrite)
+{
+    top->WE3 = 1;
+    top->A3 = 1;
+    top->A1 = 1;
+    
+    top->WD3 = 10;
+    runSimulation(1);
+    EXPECT_EQ(top->RD1, 10u);  // first write
+
+    top->WD3 = 5;
+    runSimulation(1);
+    EXPECT_EQ(top->RD1, 5u);  // second write replaces the first
+
+}
+
+// check a0 == RD1 when A1 = 10
+TEST_F(RegfileTestbench, A0MatchesRD1Test)
+{
+    top->A3 = 10;
+    top->WD3 = 0xFFFFEEEE;
+    top->WE3 = 1;
+    runSimulation(1);
+
+    top->A1 = 10;
+    top->eval();
+
+    EXPECT_EQ(top->RD1, 0xFFFFEEEEu);
+    EXPECT_EQ(top->a0, top->RD1);
+}
 
 int main(int argc, char **argv)
 {
