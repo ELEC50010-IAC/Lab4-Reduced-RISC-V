@@ -14,21 +14,20 @@ logic [31:0] PC;
 logic [31:0] instr;
 
 // Control Signals
-logic PCsrc;
+logic [1:0] PCSrc;
 logic RegWrite;
-logic ALUsrc;
-logic [1:0] ImmSrc;
-logic [2:0] ALUctrl;
-logic EQ;
+logic BranchTaken;
+logic ALUSrc;
+logic [2:0] ImmSrc;
+logic [3:0] ALUControl;
 
 // Datapath
-logic [31:0]  ImmOp;
-logic [31:0] RD1, RD2, regOp2, ALUout, ReadData, Result, PCPlus4, PCTarget;
+logic [31:0]  ImmExt;
+logic ALUSrcA;
+logic [31:0] RD1, RD2, SrcB, ALUResult, ReadData, Result, PCPlus4, SrcA;
 
 logic [1:0] ResultSrc;
 logic       MemWrite;
-assign ResultSrc = 2'b00;  // TEMP until A's control unit drives it
-assign MemWrite  = 1'b0;   // TEMP: no stores yet
 
 // Instruction Fields
 logic [4:0] rs1, rs2, rd;
@@ -39,12 +38,11 @@ assign rd = instr[11:7];
 pc_top #(.WIDTH(32)) pc_reg(
     .clk(clk),
     .rst(rst),
-    .PCSrc({1'b0, PCsrc}),   // TEMP until A's 2-bit PCSrc),
-    .ImmExt(ImmOp),
+    .PCSrc(PCSrc),
+    .ImmExt(ImmExt),
     .PC(PC),
     .PCPlus4(PCPlus4),
-    .PCTarget(PCTarget),
-    .ALUResult(ALUout)
+    .ALUResult(ALUResult)
 );
 
 instr_mem #() imem(
@@ -54,20 +52,23 @@ instr_mem #() imem(
 
 control_unit control(
     .RegWrite(RegWrite),
-    .ALUCtrl(ALUctrl),
-    .ALUSrc(ALUsrc),
+    .ALUControl(ALUControl),
+    .ALUSrc(ALUSrc),
     .ImmSrc(ImmSrc),
-    .PCSrc(PCsrc),
-    .EQ(EQ),
-    .op(instr[6:0]), // op
+    .PCSrc(PCSrc),
+    .ALUSrcA(ALUSrcA),
+    .MemWrite(MemWrite),
+    .ResultSrc(ResultSrc),
+    .BranchTaken(BranchTaken),
+    .op(instr[6:0]),
     .funct3(instr[14:12]),
-    .funct7(instr[30])
+    .funct7b5(instr[30])
 );
 
 sign_ext signext(
     .Instr(instr),
     .ImmSrc(ImmSrc),
-    .ImmOp(ImmOp)
+    .ImmExt(ImmExt)
 );
 
 regfile #(.DATA_WIDTH(32), .ADDR_WIDTH(5)) rf(
@@ -84,37 +85,51 @@ regfile #(.DATA_WIDTH(32), .ADDR_WIDTH(5)) rf(
 
 mux #(.DATA_WIDTH(32)) alu_src_mux(
     .in0(RD2),
-    .in1(ImmOp),
-    .sel(ALUsrc),
-    .out(regOp2)
+    .in1(ImmExt),
+    .sel(ALUSrc),
+    .out(SrcB)
 );
 
 alu #(.DATA_WIDTH(32)) alu_unit(
-    .SrcA(RD1),
-    .SrcB(regOp2),
-    .ALUControl({1'b0, ALUctrl}),
-    .ALUResult(ALUout),
-    .Zero(EQ)
+    .SrcA(SrcA),
+    .SrcB(SrcB),
+    .ALUControl(ALUControl),
+    .ALUResult(ALUResult)
+);
+    
+
+
+
+branch_unit branch(
+    .RD1(RD1),
+    .RD2(RD2),
+    .funct3(instr[14:12]),
+    .BranchTaken(BranchTaken)
 );
 
-data_mem#() data_mem_unit(
+mux #(.DATA_WIDTH(32)) alu_srca_mux(
+    .in0(RD1),          // normal instructions
+    .in1(PC),          // auipc
+    .sel(ALUSrcA),
+    .out(SrcA)
+);
+
+data_mem data_mem_unit(
     .clk(clk),
     .funct3(instr[14:12]),
     .WE(MemWrite),
     .RD(ReadData),
-    .A(ALUout),
+    .A(ALUResult),
     .WD(RD2)
-
-
 );
 
 mux4 result_mux(
-    .in0(ALUout),
+    .in0(ALUResult),
     .in1(ReadData),
     .in2(PCPlus4),
-    .in3(32'b0),
+    .in3(ImmExt),          // lui
     .sel(ResultSrc),
     .out(Result)
 );
-    
+
 endmodule
