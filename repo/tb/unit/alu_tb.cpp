@@ -224,31 +224,90 @@ TEST_F(AluTestbench, SraTest)
     EXPECT_EQ(top->ALUResult, 0xFF000000u);
 }
 
-TEST_F(AluTestbench, ZeroTest)
+TEST_F(AluTestbench, ZeroIndependentOfControlTest)
 {
-    top->ALUControl = 0;
+    for(unsigned int code = 0; code < 16; code++){
+        top->ALUControl = code;
 
-    // Case 1: identical operands
-    top->SrcA = 0xFFFFFFFF;
-    top->SrcB = 0xFFFFFFFF;
-    top->eval();
-    EXPECT_EQ(top->Zero, 1);
+        // Equal operands : Zero must be 1 for every code
+        top->SrcA = 0x12345678;
+        top->SrcB = 0x12345678;
+        top->eval();
+        EXPECT_EQ(top->Zero, 1);
 
-    // Case 2: make SrcB differ from SrcA in exactly one bit
-    top->SrcB = 0xFFFFFFFE;
-    top->eval();
-    EXPECT_EQ(top->Zero, 0);
+        // Different operands : Zero must be 0 for every code
+        top->SrcB = 0x12345679;
+        top->eval();
+        EXPECT_EQ(top->Zero, 0);
+    }
 }
 
-TEST_F(AluTestbench, UnusedCodeGivesZeroTest)
+TEST_F(AluTestbench, ShiftEdgeTest)
 {
-    // 1111 isn't an agreed operation (only 0000 to 1001 used),
-    // so the ALU should fall through to default and give 0
-    top->ALUControl = 0b1111;
+    // Case 1: 0 shift test with sll, srl and sra
+    top->SrcB = 0;
 
-    // non-zero inputs: if default didn't work, would see 7 instead of 0 
-    top->SrcA = 3;
-    top->SrcB = 4;
+    top->ALUControl = 0b0111; // sll
+
+    top->SrcA = 0x80000000;
+    top->eval();
+    EXPECT_EQ(top->ALUResult, 0x80000000u);
+
+    top->ALUControl = 0b1000;  // srl
+
+    top->SrcA = 0x80000000;
+    top->eval();
+    EXPECT_EQ(top->ALUResult, 0x80000000u);
+
+    top->ALUControl = 0b1001;  // sra
+
+    top->SrcA = 0x80000000;
+    top->eval();
+    EXPECT_EQ(top->ALUResult, 0x80000000u);
+
+    // Case 2: shift by 31 for sll, srl and sra
+    top->SrcB = 31;
+
+    top->ALUControl = 0b0111;   // sll
+
+    top->SrcA = 1;
+    top->eval();
+    EXPECT_EQ(top->ALUResult, 0x80000000u);
+
+    top->ALUControl = 0b1000;   // srl
+
+    top->SrcA = 0x80000000;
+    top->eval();
+    EXPECT_EQ(top->ALUResult, 1u);
+
+    top->ALUControl = 0b1001;   // sra
+
+    top->SrcA = 0x80000000;
+    top->eval();
+    EXPECT_EQ(top->ALUResult, 0xFFFFFFFFu);
+
+    top->ALUControl = 0b1001;  // sra
+
+    top->SrcA = 0x7FFFFFFF;
+    top->eval();
+    EXPECT_EQ(top->ALUResult, 0u);
+
+}
+
+TEST_F(AluTestbench, SignedUnsignedBoundaryTest)
+{
+    top->SrcA = 0x80000000;
+    top->SrcB = 0x7FFFFFFF;
+    
+    // Case 1: slt between 0x80000000 and 0x7FFFFFFF
+    
+    top->ALUControl = 0b0101;   //slt
+    top->eval();
+    EXPECT_EQ(top->ALUResult, 1u);
+
+    // Case 2: sltu between 0x80000000 and 0x7FFFFFFF
+
+    top->ALUControl = 0b0110;  // sltu
     top->eval();
     EXPECT_EQ(top->ALUResult, 0u);
 }
