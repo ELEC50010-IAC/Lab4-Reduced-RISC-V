@@ -3,7 +3,10 @@ module top #(
 ) (
     input   logic clk,
     input   logic rst,
-    output  logic [DATA_WIDTH-1:0] a0    
+    /* verilator lint_off UNUSED */
+    input   logic trigger,
+    /* verilator lint_on UNUSED */
+    output  logic [DATA_WIDTH-1:0] a0   
 );
 
 // Program Counter and Instruction
@@ -20,7 +23,7 @@ logic EQ;
 
 // Datapath
 logic [31:0]  ImmOp;
-logic [31:0] RD1, RD2, regOp2, ALUout, ReadData, Result;
+logic [31:0] RD1, RD2, regOp2, ALUout, ReadData, Result, PCPlus4, PCTarget;
 
 logic [1:0] ResultSrc;
 logic       MemWrite;
@@ -36,14 +39,17 @@ assign rd = instr[11:7];
 pc_top #(.WIDTH(32)) pc(
     .clk(clk),
     .rst(rst),
-    .PCsrc(PCsrc),
-    .ImmOp(ImmOp),
-    .PC(PC)
+    .PCSrc({1'b0, PCsrc}),   // TEMP until A's 2-bit PCSrc),
+    .ImmExt(ImmOp),
+    .PC(PC),
+    .PCPlus4(PCPlus4),
+    .PCTarget(PCTarget),
+    .ALUResult(ALUout)
 );
 
-instr_mem #(.ADDRESS_WIDTH(10)) imem(
-    .addr(PC),
-    .dout(instr)
+instr_mem #() imem(
+    .A(PC),
+    .RD(instr)
 );
 
 control_unit control(
@@ -103,7 +109,7 @@ data_mem#() data_mem_unit(
 mux4 result_mux(
     .in0(ALUout),
     .in1(ReadData),
-    .in2(PC + 32'd4),
+    .in2(PCPlus4),
     .in3(32'b0),
     .sel(ResultSrc),
     .out(Result)

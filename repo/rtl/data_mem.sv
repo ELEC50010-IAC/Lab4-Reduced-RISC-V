@@ -19,7 +19,7 @@ module data_mem #(
 
 initial begin
     $display("Loading Data memory.");
-    $readmemh("../rtl/data.hex", mem); //TODO
+    $readmemh("data.hex", mem, 'h10000);
 end
 
     // misallgned access works because memory is a byte array
