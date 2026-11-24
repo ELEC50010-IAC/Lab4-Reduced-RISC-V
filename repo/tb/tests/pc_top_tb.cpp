@@ -182,6 +182,38 @@ TEST_F(PcTestbench, ArithmeticWrapsAtThirtyTwoBits)
     clockCycle();
     EXPECT_EQ(top->PC, 0x00000000u);    // wraps forwards to...?
 }
+
+
+// jalr: PC jumps to the ALU result with bit 0 cleared
+TEST_F(PcTestbench, JalrJumpsToAluResultWithBitZeroCleared)
+{
+    top->PCSrc = 2;
+    top->ALUResult = 0x00000101u;   // odd address
+    clockCycle();
+    EXPECT_EQ(top->PC, 0x00000100u);
+}
+
+// PCSrc = 3 is unused and must behave like a normal step
+TEST_F(PcTestbench, UnusedPcSrcThreeStepsByFour)
+{
+    top->PCSrc = 3;
+    top->ImmExt = 0x100u;           // should be ignored
+    clockCycle();
+    EXPECT_EQ(top->PC, RESET + 4u);
+}
+
+// PCPlus4 and PCTarget are combinational: they update with no clock edge
+TEST_F(PcTestbench, PcPlus4AndPcTargetUpdateWithoutClock)
+{
+    top->ImmExt = 0x100u;
+    top->eval();                    // no clock
+    EXPECT_EQ(top->PC, RESET);        // PC must not have moved
+    EXPECT_EQ(top->PCPlus4, RESET + 4u);
+    EXPECT_EQ(top->PCTarget, RESET + top->ImmExt);
+}
+
+
+
 // Pass command-line options to the simulator and run the GoogleTest cases
 int main(int argc, char **argv)
 {

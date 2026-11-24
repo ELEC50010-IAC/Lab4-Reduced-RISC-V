@@ -10,24 +10,20 @@ protected:
     // Begin each test at the first instruction address
     void initializeInputs() override
     {
-        top->addr = 0;
+        top->A = 0;
     }
 
     // Run ./compile.sh asm/program.S from repo/tb before running this test
+        // Write a known image so the test does not depend on whichever program ran last
     void SetUp() override
     {
-        // Check the real image before the first evaluation loads instruction memory
-        std::ifstream image("../rtl/program.hex");
-        ASSERT_TRUE(image.is_open())
-            << "Run ./compile.sh asm/program.S from repo/tb first";
-        for (unsigned int i = 0; i < 28; ++i)
+        std::ofstream image("program.hex");
+        for (unsigned int i = 0; i < 32; ++i)
         {
-            unsigned int byte = 0;
-            ASSERT_TRUE(static_cast<bool>(image >> std::hex >> byte))
-                << "Missing or invalid program byte " << i;
-            ASSERT_LE(byte, 0xffu) << "Invalid program byte " << i;
+            image << std::hex << i << "\n";   // the byte stored at address i
         }
-        BaseTestbench::SetUp();
+        image.close();
+        BaseTestbench::SetUp();               // creates the model, which loads program.hex
     }
 
     // A missing image can stop setup before the simulated memory is created
@@ -43,50 +39,51 @@ protected:
     void expectRead(std::uint32_t address, std::uint32_t expected)
     {
         SCOPED_TRACE(address);
-        top->addr = address;
+        top->A = address;
         top->eval();
-        EXPECT_EQ(top->dout, expected);
+        EXPECT_EQ(top->RD, expected);
     }
 };
 
-// The stored program bytes must reproduce the expected 32-bit instructions
+// Every word in the known image must be read back correctly
 TEST_F(InstructionMemoryTestbench, ReadsKnownInstructionWords)
 {
-    expectRead(0, 0x0ff00313u);
-    expectRead(4, 0x00000513u);
-    expectRead(8, 0x00000593u);
-    expectRead(12, 0x00058513u);
-    expectRead(16, 0x00158593u);
-    expectRead(20, 0xfe659ce3u);
-    expectRead(24, 0xfe0318e3u);
+    expectRead(0, 0x03020100u);
+    expectRead(4, 0x07060504u);
+    expectRead(8, 0x0B0A0908u);
+    expectRead(12, 0x0F0E0D0Cu);
+    expectRead(16, 0x13121110u);
+    expectRead(20, 0x17161514u);
+    expectRead(24, 0x1B1A1918u);
+    expectRead(28, 0x1F1E1D1Cu);
 }
 
 // Distinct bytes reveal whether a word has been assembled in the wrong order
 TEST_F(InstructionMemoryTestbench, AssemblesDistinctBytesInLittleEndianOrder)
 {
-    // At address 20, the assembler emits e3 9c 65 fe, least significant byte first
-    expectRead(20, 0xe3u | (0x9cu << 8) | (0x65u << 16) | (0xfeu << 24));
+    // Bytes 14 15 16 17 at addresses 20..23 must assemble as 0x17161514
+    expectRead(20, 0x14u | (0x15u << 8) | (0x16u << 16) | (0x17u << 24));
 }
 
-// A new address must produce its instruction without any clock activity
+// A new address must produce its word without any clock activity
 TEST_F(InstructionMemoryTestbench, AddressChangesUpdateOutputWithoutAClock)
 {
-    expectRead(0, 0x0ff00313u);
-    expectRead(12, 0x00058513u);
-    expectRead(24, 0xfe0318e3u);
-    expectRead(4, 0x00000513u);
+    expectRead(0, 0x03020100u);
+    expectRead(12, 0x0F0E0D0Cu);
+    expectRead(24, 0x1B1A1918u);
+    expectRead(4, 0x07060504u);
 }
 
 // Reads must depend on the current address, not the order of earlier reads
 TEST_F(InstructionMemoryTestbench, SupportsNonSequentialReadsAndRevisits)
 {
-    expectRead(20, 0xfe659ce3u);
-    expectRead(4, 0x00000513u);
-    expectRead(12, 0x00058513u);
-    expectRead(0, 0x0ff00313u);
-    expectRead(20, 0xfe659ce3u);
-    expectRead(24, 0xfe0318e3u);
-    expectRead(4, 0x00000513u);
+    expectRead(20, 0x17161514u);
+    expectRead(4, 0x07060504u);
+    expectRead(12, 0x0F0E0D0Cu);
+    expectRead(0, 0x03020100u);
+    expectRead(20, 0x17161514u);
+    expectRead(24, 0x1B1A1918u);
+    expectRead(4, 0x07060504u);
 }
 
 int main(int argc, char **argv)
